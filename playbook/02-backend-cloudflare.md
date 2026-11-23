@@ -29,11 +29,10 @@ One account, one CLI ([Wrangler](https://developers.cloudflare.com/workers/wrang
 
 ```
 apps/
-  api/        Worker: src/index.ts (routes), auth.ts, ai.ts, billing.ts, events.ts; migrations/*.sql
-  web/        React + Vite, deployed as static assets
-  ios/        SwiftUI
-  android/    Kotlin/Compose or React Native
-docs/         brief.md, progress.md, decisions/
+  api/        Worker: src/index.ts (routes), catalog.ts, cart.ts, orders.ts, email.ts, experiments.ts, events.ts, auth.ts; migrations/*.sql
+  web/        React + Vite store, deployed as static assets
+emails/       shell.ts and one file per email
+docs/         brief.md, copy-brief.md, progress.md, EXPERIMENTS.md, decisions/
 ```
 
 Start from [`templates/worker.ts`](../templates/worker.ts) and [`templates/wrangler.jsonc`](../templates/wrangler.jsonc).
@@ -44,7 +43,7 @@ Start from [`templates/worker.ts`](../templates/worker.ts) and [`templates/wrang
 const route = `${request.method} ${url.pathname}`;
 switch (route) {
   case "GET /health": return Response.json({ ok: true });
-  case "POST /ai/scan": return scan(request, env, user);
+  case "POST /cart": return updateCart(request, env, visitor);
 }
 ```
 
@@ -52,12 +51,12 @@ Use [`URLPattern`](https://developer.mozilla.org/docs/Web/API/URLPattern) for pa
 
 ## Rules
 
-1. Stream every AI response (SSE or WebSocket).
+1. The server decides every price, discount, and stock level.
 2. Workers are stateless. State lives in D1, Durable Objects, KV, or R2.
 3. Separate `env.staging` and `env.production`, each with its own resources and secrets.
 4. Secrets via `wrangler secret put`; local ones in gitignored `.dev.vars`.
 5. Await or `ctx.waitUntil()` every promise.
-6. Verify every webhook signature (Stripe, Superwall/App Store).
+6. Verify every webhook signature (Stripe, your fulfilment provider).
 7. Make jobs idempotent; Queues and Workflows retry.
 8. All server logic runs on Cloudflare. No side servers.
 9. Heavy CPU work goes in Workflows or Queues, not a request.

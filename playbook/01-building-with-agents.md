@@ -19,9 +19,10 @@
 | Database at scale | **PlanetScale** |
 | AI | **OpenRouter** (DeepSeek default), models picked with **Artificial Analysis** |
 | GPU workflows at volume | **Vast.ai** / **RunPod** |
-| Payments | **Superwall** (mobile) · **Stripe** (web) |
+| Payments | **Stripe** |
 | Analytics + errors | **Tinybird** |
-| Clients | **SwiftUI** for iOS · **React Native** or **Kotlin** for Android · **React + Vite** for web |
+| Store | **React + Vite** on Workers static assets |
+| Email | **Cloudflare Email Service** |
 
 Plain platform APIs: Workers `fetch` handler, SQL, CSS variables. No router framework, ORM, or UI kit.
 
@@ -36,23 +37,23 @@ Solve it with the stack. If that's impossible, ask the human.
 1. `AGENTS.md` at the root: stack, commands, rules, "never" list. `CLAUDE.md` contains `@AGENTS.md`. Start from [`templates/AGENTS.app.md`](../templates/AGENTS.app.md).
 2. One-command loops: `bun dev`, `bun test`, `bun run check`, `bun run deploy:staging`.
 3. `docs/decisions/`: one short file per decision.
-4. Small files with obvious names: `auth.ts`, `billing.ts`, `ai.ts`, `events.ts`.
+4. Small files with obvious names: `catalog.ts`, `cart.ts`, `orders.ts`, `email.ts`, `events.ts`.
 
 ## Build fast
 
-1. Day 1: the core loop (one input → one result) end to end on a real phone.
-2. Fake the AI response, user, and paywall until the screens are right.
+1. Day 1: the core loop (product page → cart → test payment → confirmation email) end to end on a real phone.
+2. Fake the catalog, reviews, and stock until the screens are right.
 3. Copy flows from a reference ([09](09-design-ux.md)).
 4. Start from [`templates/`](../templates/).
-5. Fast loops: SwiftUI previews, `wrangler dev` + Vite hot reload, `curl`.
-6. Parallel agents on separate parts (API, iOS, copy), each in its own worktree.
-7. Ship to TestFlight daily. Use the app each evening.
+5. Fast loops: `wrangler dev` + Vite hot reload at phone width, `curl`, the email shell rendered to a local file.
+6. Parallel agents on separate parts (API, screens, emails, copy), each in its own worktree.
+7. Deploy to staging daily. Buy from your own store on your phone each evening.
 8. Park non-launch ideas in `docs/later.md`.
 9. No abstractions until the third copy.
 10. Timebox:
-    - Week 1: core loop and backend.
-    - Week 2: onboarding, paywall, analytics.
-    - Week 3: polish and store assets.
+    - Week 1: product page, checkout, orders.
+    - Week 2: landing pages, email flows, analytics.
+    - Week 3: polish, policies, first creators.
     - Week 4: launch.
 
 ## Dev loop
@@ -69,7 +70,7 @@ Solve it with the stack. If that's impossible, ask the human.
 
 ## Prompting
 
-- Goal plus "done when": "Users can restore purchases on iOS. Done when the Restore button works in the sandbox and `entitlements` updates."
+- Goal plus "done when": "Shoppers can pay with Apple Pay. Done when a test-mode wallet order lands in `orders` and the confirmation email arrives."
 - Point at files and docs; don't paste them.
 - Name constraints: "no new dependencies", "Cloudflare only", "use the existing tokens".
 

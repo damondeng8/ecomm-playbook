@@ -1,57 +1,44 @@
 # 11 · Distribution
 
-> **Default:** plan distribution before you build; build features that share themselves.
-> **Agent: read this when** building share features, landing pages, referrals, store listings, or content plans. Humans own accounts, posting, and ad spend.
+> **Default:** plan distribution before you buy stock. Creative is the targeting: the ad that shows the result finds its own audience.
+> **Agent: read this when** building landing pages, referral or creator links, or content and ad plans. Humans own accounts, posting, and ad spend.
 
 ## Channels, ranked
 
 | # | Channel | Cost | Note |
 |---|---|---|---|
-| 1 | **Short-form video** (TikTok, Reels, Shorts) | Time | Cal AI playbook. Show the result in 2 seconds |
-| 2 | **Creators (UGC)** | $–$$ | [SideShift](https://apps.apple.com/us/app/sideshift-earn-money/id6481115809), [Trybe](https://apps.apple.com/us/app/trybe-creators/id6759299465). Flat fee + bonus |
-| 3 | **Influencers + meme pages** | $–$$ | DM on Instagram/TikTok, pay per post |
-| 4 | **Paid social** (Meta, TikTok) | $$$ | Scale what works organically |
-| 5 | **App Store Optimization** | Free | Keywords, icon, screenshots, ratings |
-| 6 | **Apple Search Ads** | $$ | Bid on your category |
-| 7 | **Build in public** (X, LinkedIn) | Free | Share real numbers |
-| 8 | **SEO pages** | Time | One prerendered page per use case (web-first) |
-| 9 | **Share loops + referrals** | Free | Every share is a landing page |
-| 10 | **Launch spikes** | Free | Product Hunt, Show HN, Reddit, niche communities |
+| 1 | **Short-form video** (TikTok, Reels, Shorts) | Time | Show the result in 2 seconds |
+| 2 | **Creators (UGC)** | $–$$ | Free product + flat fee + commission. Their videos become your ads |
+| 3 | **Paid social** (Meta, TikTok) | $$$ | Scale the videos that already work organically |
+| 4 | **Email** | Free | Your own list ([10](10-email.md)). Start collecting on day one |
+| 5 | **Influencers + niche pages** | $–$$ | DM, pay per post, one tracked link each |
+| 6 | **Search** (Google Shopping, SEO pages) | $–$$ | For products people already search for |
+| 7 | **Referrals** | Free | Give a discount, get a credit |
+| 8 | **Marketplaces** | % | Reach, at the cost of margin and the customer relationship |
 
-## Short-form
+## Short-form and ads
 
-1. 3–5 formats: "I took a photo of my lunch and…", before/after, reaction, "POV: you finally…", tutorial.
-2. Several brand accounts + 10–50 micro-creators, small fixed fee per video + view/install bonus.
-   - Hire on SideShift and Trybe.
-   - Search niche hashtags, list matching influencers and meme pages (fitness, study, faith, self-improvement), DM a flat price per post, a link, and a free subscription.
-   - **[AGENT]** builds the outreach list (handle, followers, avg views, niche, contact), drafts DMs and briefs, tracks deals with one link each. **[HUMAN]** sends DMs and pays.
-3. Post daily. Remix winners.
-4. Track hook → views → installs per creator link.
-5. Turn winners into ads (Spark Ads, Meta partnership ads).
-6. Consistent colors, type, and filters. References: Cal AI's and EcoGPT's Instagram.
+1. 3–5 formats: problem then fix, before/after, unboxing, "things I wish I knew", a customer's reaction.
+2. Write each hook for one awareness level ([15](15-copy.md)). Cold traffic gets the problem or a story, never the product name first.
+3. Post daily. Remix winners. Turn winners into ads (Spark Ads, partnership ads).
+4. **One landing page per ad angle** ([06](06-screens.md)). The headline on the page repeats the promise in the ad.
+5. Track hook → views → visits → orders per link. Kill by cost per order, not by views.
+6. **[AGENT]** builds the creator list (handle, followers, average views, niche, contact), drafts DMs and briefs, makes one tracked link and code each. **[HUMAN]** sends DMs, ships product, pays.
 
-## In the product
+## Ad spend rules
 
-- **Share cards:** every result exports as a 9:16 image with logo and link.
-- **Referrals:** give a week, get a week (Superwall offer codes on mobile, Stripe coupons on web).
-- **Universal links:** open the app or fall back to a web page on Workers.
-- **Review prompt** after a win.
+- **[HUMAN]** sets the daily cap and the target cost per order ([12](12-costs.md)). The agent never raises spend on its own.
+- Judge on orders in your own database, not on platform-reported conversions ([08](08-analytics-observability.md)).
+- New creative every week. Fatigue is the usual reason a good ad stops working.
 
-## ASO checklist
+## In the store
 
-- [ ] Top 2–3 keywords in title and subtitle
-- [ ] Keyword field filled, no repeats of title words
-- [ ] Icon readable at 60 px
-- [ ] First 3 screenshots: real UI, big captions
-- [ ] 15–30 s preview video first
-- [ ] Localized for top 10 markets
-- [ ] Custom product pages per ad campaign
-
-## Web-to-app
-
-Ads → web onboarding quiz → web paywall (Stripe or Superwall web checkout) → download link. Check Apple's link-out rules per storefront ([07](07-payments-pricing.md)).
+- **Email capture** on the first visit: a real reason to sign up, not a spin-the-wheel.
+- **Referrals:** a link and a code per customer, Stripe coupons, credited when the friend's order ships.
+- **Reviews with photos**, requested by email after delivery, shown on the product page.
+- **Creator pages:** `/with/<creator>` with their video, their words, their code.
 
 ## Resources
 
-- [Superwall blog](https://superwall.com/blog) · [Sub Club podcast](https://subclub.com) · [Apple Search Ads](https://searchads.apple.com)
-- [App Store product page optimization](https://developer.apple.com/app-store/product-page-optimization/) · [Lenny's Newsletter](https://www.lennysnewsletter.com)
+- [Meta Ads Library](https://www.facebook.com/ads/library) · [TikTok Creative Center](https://ads.tiktok.com/business/creativecenter)
+- [Google Merchant Center](https://support.google.com/merchants) · *Breakthrough Advertising* ([15](15-copy.md))

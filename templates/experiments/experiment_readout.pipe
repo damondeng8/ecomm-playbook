@@ -1,17 +1,17 @@
 DESCRIPTION >
     Per-arm readout for one experiment: the numbers the optimizer routines decide on (playbook chapter 14).
-    A user counts in the arm of their first experiment_exposed event, and only for outcomes after it.
-    Returns one row per arm with exposed, converted, checkout and paying users, cash, and for each
+    A visitor counts in the arm of their first experiment_exposed event, and only for outcomes after it.
+    Returns one row per arm with exposed, converted, checkout and ordering visitors, cash, margin, and for each
     test arm the relative lift and two-sided p-value against the control arm (two-proportion z-test).
-    Copy to tinybird/endpoints/. Expects the events datasource: event, ts, user_id, props (JSON string), env.
+    Copy to tinybird/endpoints/. Expects the events datasource: event, ts, visitor_id, props (JSON string), env.
 
 TOKEN optimizer_read READ
 
-NODE exposed_users
+NODE first_exposure
 SQL >
     %
     SELECT
-        user_id,
+        visitor_id,
         argMin(JSONExtractString(props, 'variant'), ts) AS variant,
         min(ts) AS first_exposed
     FROM events
@@ -20,44 +20,46 @@ SQL >
         AND JSONExtractString(props, 'experiment_id') = {{ String(experiment_id, required=True) }}
         AND ts >= {{ DateTime(since, '2020-01-01 00:00:00') }}
         AND ts < now()
-        AND user_id IS NOT NULL
-    GROUP BY user_id
+        AND visitor_id IS NOT NULL
+    GROUP BY visitor_id
 
 NODE outcome_events
 SQL >
     %
-    SELECT user_id, event, ts, JSONExtractFloat(props, 'price') AS price
+    SELECT visitor_id, event, ts, JSONExtractFloat(props, 'value') AS value, JSONExtractFloat(props, 'margin') AS margin
     FROM events
-    WHERE event IN ({{ String(primary_event, 'paywall_viewed') }}, 'checkout_started', 'subscription_started', 'refunded')
+    WHERE event IN ({{ String(primary_event, 'add_to_cart') }}, 'checkout_started', 'order_placed', 'order_refunded')
         AND env = {{ String(env, 'production') }}
         AND ts >= {{ DateTime(since, '2020-01-01 00:00:00') }}
         AND ts < now()
-        AND user_id IN (SELECT user_id FROM exposed_users)
+        AND visitor_id IN (SELECT visitor_id FROM first_exposure)
 
 NODE per_user
 SQL >
     %
     SELECT
-        x.user_id AS user_id,
+        x.visitor_id AS visitor_id,
         x.variant AS variant,
-        max(o.event = {{ String(primary_event, 'paywall_viewed') }} AND o.ts >= x.first_exposed) AS converted,
+        max(o.event = {{ String(primary_event, 'add_to_cart') }} AND o.ts >= x.first_exposed) AS converted,
         max(o.event = 'checkout_started' AND o.ts >= x.first_exposed) AS checkout,
-        max(o.event = 'subscription_started' AND o.ts >= x.first_exposed AND o.price > 0) AS paid,
-        sumIf(o.price, o.event = 'subscription_started' AND o.ts >= x.first_exposed)
-            - sumIf(o.price, o.event = 'refunded' AND o.ts >= x.first_exposed) AS cash
-    FROM exposed_users AS x
-    LEFT JOIN outcome_events AS o ON o.user_id = x.user_id
-    GROUP BY x.user_id, x.variant
+        max(o.event = 'order_placed' AND o.ts >= x.first_exposed) AS ordered,
+        sumIf(o.value, o.event = 'order_placed' AND o.ts >= x.first_exposed)
+            - sumIf(o.value, o.event = 'order_refunded' AND o.ts >= x.first_exposed) AS cash,
+        sumIf(o.margin, o.event = 'order_placed' AND o.ts >= x.first_exposed) AS margin
+    FROM first_exposure AS x
+    LEFT JOIN outcome_events AS o ON o.visitor_id = x.visitor_id
+    GROUP BY x.visitor_id, x.variant
 
 NODE per_arm
 SQL >
     SELECT
         variant,
-        count() AS exposed_users,
-        sum(converted) AS converted_users,
-        sum(checkout) AS checkout_users,
-        sum(paid) AS paying_users,
-        sum(cash) AS cash
+        count() AS exposed_visitors,
+        sum(converted) AS converted_visitors,
+        sum(checkout) AS checkout_visitors,
+        sum(ordered) AS ordering_visitors,
+        sum(cash) AS cash,
+        sum(margin) AS margin
     FROM per_user
     GROUP BY variant
 
@@ -66,20 +68,23 @@ SQL >
     %
     SELECT
         a.variant AS variant,
-        a.exposed_users AS exposed_users,
-        a.converted_users AS converted_users,
-        a.checkout_users AS checkout_users,
-        a.paying_users AS paying_users,
+        a.exposed_visitors AS exposed_visitors,
+        a.converted_visitors AS converted_visitors,
+        a.checkout_visitors AS checkout_visitors,
+        a.ordering_visitors AS ordering_visitors,
         a.cash AS cash,
-        a.converted_users / a.exposed_users AS conversion_rate,
-        a.checkout_users / a.exposed_users AS checkout_rate,
-        a.cash / a.exposed_users AS cash_per_exposed,
-        if(a.variant = c.variant OR c.converted_users = 0, NULL,
-            (a.converted_users / a.exposed_users) / (c.converted_users / c.exposed_users) - 1) AS lift_vs_control,
+        a.margin AS margin,
+        a.ordering_visitors / a.exposed_visitors AS order_rate,
+        a.margin / a.exposed_visitors AS margin_per_exposed,
+        a.converted_visitors / a.exposed_visitors AS conversion_rate,
+        a.checkout_visitors / a.exposed_visitors AS checkout_rate,
+        a.cash / a.exposed_visitors AS cash_per_exposed,
+        if(a.variant = c.variant OR c.converted_visitors = 0, NULL,
+            (a.converted_visitors / a.exposed_visitors) / (c.converted_visitors / c.exposed_visitors) - 1) AS lift_vs_control,
         if(a.variant = c.variant OR pooled = 0 OR pooled = 1, NULL,
-            erfc(abs(a.converted_users / a.exposed_users - c.converted_users / c.exposed_users)
-                / sqrt(pooled * (1 - pooled) * (1 / a.exposed_users + 1 / c.exposed_users)) / sqrt(2))) AS p_value_vs_control,
-        (a.converted_users + c.converted_users) / (a.exposed_users + c.exposed_users) AS pooled
+            erfc(abs(a.converted_visitors / a.exposed_visitors - c.converted_visitors / c.exposed_visitors)
+                / sqrt(pooled * (1 - pooled) * (1 / a.exposed_visitors + 1 / c.exposed_visitors)) / sqrt(2))) AS p_value_vs_control,
+        (a.converted_visitors + c.converted_visitors) / (a.exposed_visitors + c.exposed_visitors) AS pooled
     FROM per_arm AS a
     CROSS JOIN (SELECT * FROM per_arm WHERE variant = {{ String(control, 'control') }}) AS c
     ORDER BY variant

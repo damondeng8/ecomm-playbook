@@ -1,8 +1,8 @@
-# AGENTS.md: build a useful, profitable app
+# AGENTS.md: build a profitable online store
 
-You are a coding agent (Claude Code, OpenCode, Codex, …). The human wants to build an app that improves people's lives (fitness, focus, learning, sleep, eating) and makes money, on this stack.
+You are a coding agent (Claude Code, OpenCode, Codex, …). The human wants to sell a physical or digital product online, at a profit, on this stack: a fast store, an honest offer, email that brings people back, and experiments that keep improving it.
 
-If you were told to clone this repo and read this file: read all of it, then start **Phase 0** by asking the Phase 0 questions.
+If you were told to read this file: read all of it, then start **Phase 0** by asking the Phase 0 questions.
 
 Walk the human through every phase in order. Do **[AGENT]** steps yourself. Give exact instructions for **[HUMAN]** steps. Don't skip **Gate A**.
 
@@ -10,158 +10,145 @@ Walk the human through every phase in order. Do **[AGENT]** steps yourself. Give
 
 ## Rules
 
-1. **Helpful first.** Deliver what the app promises. Honest trials, easy cancellation, no dark patterns.
-2. **UX first.** Pick the faster, simpler option.
+1. **Helpful first.** Sell something that does what the page says. True claims, real prices, real deadlines, easy returns, easy unsubscribe. No dark patterns.
+2. **UX first.** Pick the faster, simpler option. Phone first.
 3. **Use only this stack:**
 
 | Job | Use |
 |---|---|
 | Server, data, files, jobs, email, hosting | **Cloudflare**: Workers (plain `fetch` handler), D1 (plain SQL), R2, KV, Durable Objects, Queues, Workflows, AI Gateway, Email Service, Turnstile |
-| Auth | **Better Auth** (a library in the Worker) |
+| Store front end | **React + Vite** on Workers static assets |
+| Checkout, tax, subscriptions | **Stripe** |
+| Customers and admin sign-in | **Better Auth** (a library in the Worker), guest checkout first |
 | Database at scale | **PlanetScale** via Hyperdrive |
-| AI | **OpenRouter**, **DeepSeek** by default. Choose models with **Artificial Analysis** plus your own evals |
-| Custom AI workflows at volume | **Vast.ai** / **RunPod** GPUs (ASR, image generation, self-hosted LLMs). Models only; control stays on Cloudflare |
-| Payments | **Superwall** (iOS/Android) · **Stripe** (web) |
-| Analytics + errors | **Tinybird** |
-| Clients | **SwiftUI** for iOS · **React Native** or **Kotlin** for Android · **React + Vite** for web |
+| Email | **Cloudflare Email Service**, HTML from `templates/email/shell.ts` |
+| Analytics, experiments, errors | **Tinybird** |
+| AI helpers | **OpenRouter**, **DeepSeek** by default |
+| Fulfilment | The human's 3PL or label provider, called from a Queue |
 | Coding | **Claude Code** (max performance) · **OpenCode + DeepSeek** (efficiency) |
 
-4. **Do not use:** Vercel, Netlify, Lovable, Bolt, v0, Replit (hosting), Bubble, FlutterFlow, Firebase, Supabase, Heroku, Render, Railway, AWS Amplify, Clerk, Auth0, Sentry, PostHog, Next.js, Hono, Drizzle, Prisma. If the stack can't do something, stop and ask.
-5. Ask before adding a dependency. Prefer platform APIs (fetch, SQL, CSS variables, SwiftUI).
-6. All server logic runs on Cloudflare. Keys never ship in clients.
+4. **Do not use:** Vercel, Netlify, Lovable, Bolt, v0, Replit (hosting), Bubble, Firebase, Supabase, Heroku, Render, Railway, AWS Amplify, Clerk, Auth0, Sentry, PostHog, Next.js, Hono, Drizzle, Prisma, or a hosted store builder or email platform. If the stack can't do something, stop and ask.
+5. Ask before adding a dependency. Prefer platform APIs (fetch, SQL, CSS variables).
+6. All server logic runs on Cloudflare. Keys never ship in the browser. The server decides every price.
 7. Staging first. Never touch production data or run production deploys or migrations.
-8. Before saying done: run checks and tests, and look at the running app.
-9. Experiments (chapter 14): **Tier A** (copy, CTA labels, rollout weights) is the agent's to draft, ramp, and ship after a 24-hour veto window. **Tier B** (screens, flow length, prices, trials, paywall structure, Stripe and the stores) needs a founder `APPROVED` line in `docs/EXPERIMENTS.md` first. A `VETO` line stops the agent. New features ramp only when the founder says so.
-10. Build fast (chapter 01): core loop end to end on day 1, fake what isn't built, copy flows from references, ship to TestFlight daily, park other ideas in `docs/later.md`.
+8. Before saying done: run checks and tests, and look at the running store on a phone.
+9. **Copy** (chapter 15): fill in `docs/copy-brief.md` before writing a headline, a page, or an email. Every claim has a source.
+10. **Email** (chapter 10): the agent drafts. A human approves the copy and makes every live send. New automations start in rehearsal.
+11. **Experiments** (chapter 14): **Tier A** (copy, button labels, subject lines, order of approved sections, rollout weights) is the agent's to draft, ramp, and ship after a 24-hour veto window. **Tier B** (screens, sections, prices, discounts, bundles, shipping, guarantees, new emails, Stripe) needs a founder `APPROVED` line in `docs/EXPERIMENTS.md` first. A `VETO` line stops the agent. New features ramp only when the founder says so.
+12. Ad spend is the human's. The agent never raises a budget.
+13. Build fast (chapter 01): product page → cart → test payment → confirmation email on day 1, fake what isn't built, copy flows from references, park other ideas in `docs/later.md`.
 
 ## Chapters by phase
 
 | Phase | Read |
 |---|---|
-| 0 Niche | [00 · Find your niche](playbook/00-find-your-niche.md), [12 · Costs](playbook/12-costs.md) |
-| 1 Brief | [09 · Design & UX](playbook/09-design-ux.md), [11 · Distribution](playbook/11-distribution.md) |
+| 0 Product | [00 · Product and offer](playbook/00-product-and-offer.md), [12 · Unit economics](playbook/12-costs.md) |
+| 1 Brief | [15 · Copy](playbook/15-copy.md), [09 · Design & UX](playbook/09-design-ux.md), [11 · Distribution](playbook/11-distribution.md) |
 | 2 Repo | [01 · Building with agents](playbook/01-building-with-agents.md) |
 | 3 Backend | [02 · Backend](playbook/02-backend-cloudflare.md), [03 · Database](playbook/03-database.md) |
-| 4 Auth | [04 · Auth](playbook/04-auth.md) |
-| 5 AI | [05 · AI](playbook/05-ai.md) |
-| 6–7 Clients | [06 · Clients](playbook/06-clients.md) |
-| 8 Payments | [07 · Payments & pricing](playbook/07-payments-pricing.md) |
-| 9 Analytics | [08 · Analytics & errors](playbook/08-analytics-observability.md) |
-| 11 Retention | [10 · Retention](playbook/10-retention.md) |
-| 12 Launch | [13 · Security & compliance](playbook/13-security-privacy-compliance.md) |
-| 13–14 Grow | [11 · Distribution](playbook/11-distribution.md), [12 · Costs](playbook/12-costs.md), [14 · Experiments](playbook/14-experiments.md) |
+| 4 Screens | [06 · Screens](playbook/06-screens.md) |
+| 5 Checkout | [07 · Checkout, offers, pricing](playbook/07-payments-pricing.md), [04 · Customers](playbook/04-auth.md) |
+| 6 Analytics | [08 · Analytics & errors](playbook/08-analytics-observability.md) |
+| 7 Email | [10 · Email](playbook/10-email.md) |
+| 8 Polish | [09 · Design & UX](playbook/09-design-ux.md), [05 · AI](playbook/05-ai.md) |
+| 9 Launch | [13 · Security, privacy, selling rules](playbook/13-security-privacy-compliance.md) |
+| 10–11 Grow | [11 · Distribution](playbook/11-distribution.md), [14 · Experiments](playbook/14-experiments.md) |
 
-Templates in [`templates/`](templates/): `AGENTS.app.md`, `worker.ts`, `auth.ts`, `wrangler.jsonc`, `dev.vars.example`, `experiments/` (`EXPERIMENTS.md` ledger, `SCAN.md` and `DRAFT.md` routine prompts, `experiment_readout.pipe` for Tinybird). Prefer linked docs over memory. Cloudflare's agent index: <https://developers.cloudflare.com/llms.txt>.
+Templates in [`templates/`](templates/): `AGENTS.app.md`, `worker.ts`, `auth.ts`, `wrangler.jsonc`, `dev.vars.example`, `email/` (`shell.ts` and its tests), `experiments/` (`EXPERIMENTS.md` ledger, `SCAN.md` and `DRAFT.md` routine prompts, `experiment_readout.pipe` for Tinybird). Prefer linked docs over memory. Cloudflare's agent index: <https://developers.cloudflare.com/llms.txt>.
 
 ---
 
 ## Checklist
 
-Copy into the app's `docs/progress.md`. Update it and show it after every phase.
+Copy into the store's `docs/progress.md`. Update it and show it after every phase.
 
-### Phase 0: Find and validate the niche (1–7 days) · GATE A
+### Phase 0: Product and offer (1–7 days) · GATE A
 
-- [ ] **[AGENT]** Ask in one message: Who do you know or belong to? What do they paste into ChatGPT? What do they complain about? Which apps do they pay for?
-- [ ] **[AGENT]** Propose 3 niches (chapter 00): one-liner, 2–3 reference apps, domain watch-outs, scorecard (7 criteria, 1–5 each).
-- [ ] **[AGENT]** Top candidate: read competitors' 1–3★ App Store reviews, write 10 short-form video hooks, draft a waitlist site (Worker + D1).
-- [ ] **[HUMAN]** Post the videos and waitlist for one week.
-- [ ] **[AGENT]** Run chapter 12 unit economics at the human's price.
-- **Gate A, build only if:** scorecard ≥ 25/35 with no 1s · demand signal (saves, shares, "what app is this?", waitlist ≥ 10% of visitors) · revenue per download (chapter 12) well above cost per download.
+- [ ] **[AGENT]** Ask in one message: What do you want to sell, or who can you reach? What does it cost you landed? What do those people already buy and complain about? Who do they listen to?
+- [ ] **[AGENT]** Score the product, or propose 3 (chapter 00): one-liner, 2–3 reference stores, domain watch-outs, scorecard (7 criteria, 1–5 each).
+- [ ] **[AGENT]** Read competitors' 1–3★ reviews into `docs/voice-of-customer.md`. Write 10 short-form video hooks. Draft a presale or waitlist page (Worker + D1) with the real price.
+- [ ] **[HUMAN]** Post the videos and the page for one week.
+- [ ] **[AGENT]** Run chapter 12 unit economics with the human's real costs in `docs/unit-economics.md`.
+- **Gate A, build only if:** scorecard ≥ 25/35 with no 1s · demand signal (saves, shares, "where can I buy this?", ≥ 10% of visitors leave an email, or presale orders) · contribution margin before ads clearly above the expected cost to acquire a customer.
 
 ### Phase 1: Brief
 
-- [ ] **[AGENT]** Reference UI (chapter 09): category leaders via the App Store Search API, screenshots in `docs/references/`, flows from Mobbin and Screens Design, a teardown each. One reference per screen.
-- [ ] **[AGENT]** `docs/brief.md`: one-liner, core action, aha moment, onboarding outline, paywall placement, price (default **$30/year, 3-day trial**), 2–3 reference apps, domain watch-outs, distribution plan (chapter 11), cost estimate (chapter 12).
-- **Done when:** the human approves the brief.
+- [ ] **[AGENT]** `docs/copy-brief.md` (chapter 15): customer, desire in their words, awareness level, sophistication stage, mechanism, proof, offer, objections, voice. Every line sourced.
+- [ ] **[AGENT]** Reference stores (chapter 09): screenshots at phone width in `docs/references/`, a teardown each, their emails. One reference per screen.
+- [ ] **[AGENT]** `docs/brief.md`: one-liner, the offer (bundles, bonus, guarantee, shipping), price ladder and floor, the six screens, the email flows, distribution plan (chapter 11), unit economics.
+- **Done when:** the human approves both briefs.
 
 ### Phase 2: Accounts & repo
 
 - [ ] **[HUMAN]** Create accounts (send only the ones needed):
-  [Cloudflare](https://dash.cloudflare.com/sign-up) (Workers Paid + domain) · [GitHub](https://github.com) · [OpenRouter](https://openrouter.ai) (credits + key) · [Apple Developer](https://developer.apple.com/programs/enroll/) (start first; takes days) + [Small Business Program](https://developer.apple.com/app-store/small-business-program/) · [Google Play Console](https://play.google.com/console/signup) · [Superwall](https://superwall.com) · [Stripe](https://dashboard.stripe.com/register) · [Tinybird](https://www.tinybird.co)
+  [Cloudflare](https://dash.cloudflare.com/sign-up) (Workers Paid + domain) · [GitHub](https://github.com) · [Stripe](https://dashboard.stripe.com/register) · [Tinybird](https://www.tinybird.co) · [OpenRouter](https://openrouter.ai) (only if using AI helpers) · a fulfilment provider
 - [ ] **[HUMAN]** Run `npx wrangler login` and `gh auth login`.
-- [ ] **[AGENT]** Scaffold `apps/api` (from `templates/worker.ts` + `templates/wrangler.jsonc`), `apps/web` (`npm create cloudflare@latest -- apps/web --framework=react`), `apps/ios`, `apps/android`, `docs/decisions`. Copy `templates/AGENTS.app.md` to `AGENTS.md` and fill it in; add `CLAUDE.md` containing `@AGENTS.md`. Root scripts: `dev`, `check`, `test`, `deploy:staging`, `deploy:production`. Copy `templates/experiments/EXPERIMENTS.md` to `docs/EXPERIMENTS.md`. Gitignore `.dev.vars*`, `.wrangler`, `node_modules`, `DerivedData`.
+- [ ] **[AGENT]** Scaffold `apps/api` (from `templates/worker.ts` + `templates/wrangler.jsonc`), `apps/web` (`npm create cloudflare@latest -- apps/web --framework=react`), `emails/` (from `templates/email/`), `docs/decisions`. Copy `templates/AGENTS.app.md` to `AGENTS.md` and fill it in; add `CLAUDE.md` containing `@AGENTS.md`. Copy `templates/experiments/EXPERIMENTS.md` to `docs/EXPERIMENTS.md`. Root scripts: `dev`, `check`, `test`, `deploy:staging`, `deploy:production`. Gitignore `.dev.vars*`, `.wrangler`, `node_modules`.
 - **Done when:** `bun run check && bun test` passes and the first commit is pushed.
 
 ### Phase 3: Backend + database
 
-- [ ] **[AGENT]** D1, KV, R2 for staging and production; ids in `wrangler.jsonc`.
-- [ ] **[AGENT]** Migrations (plain SQL, chapter 03): Better Auth tables, `entitlements`, `usage_ledger`, core tables.
-- [ ] **[AGENT]** `GET /health`, JSON errors with an `error` event to Tinybird, CORS for `WEB_ORIGIN`. Deploy to staging.
-- **Done when:** `curl https://api-staging.<domain>/health` returns 200 and migrations are applied on staging.
+- [ ] **[AGENT]** D1, KV, R2, Queues for staging and production; ids in `wrangler.jsonc`.
+- [ ] **[AGENT]** Migrations (plain SQL, chapter 03): products, variants, carts, orders, experiment assignments, email consent and ledger, Better Auth tables.
+- [ ] **[AGENT]** `GET /health`, catalog and cart routes with server-side prices, a visitor-id cookie, JSON errors with an `error` event to Tinybird. Deploy to staging.
+- **Done when:** `curl https://api-staging.<domain>/health` returns 200, migrations are applied on staging, and the cart total is computed by the server.
 
-### Phase 4: Auth
+### Phase 4: Screens
 
-- [ ] **[AGENT]** `auth.ts` from the template: anonymous, Apple (native idToken), Google, magic link, bearer.
-- [ ] **[HUMAN]** Create the Apple Services ID + key and Google OAuth client; set secrets with `wrangler secret put` (agent gives the commands).
-- [ ] **[AGENT]** In-app account deletion, rate limits on `/api/auth/*`, Turnstile on email sign-up.
-- **Done when:** on staging: anonymous sign-in, link Apple or Google, cookies on web, bearer on native, account deletion.
+- [ ] **[AGENT]** Design tokens first (chapter 09). Then the product page, cart drawer, and thank-you page from chapter 06, as section lists fed by data, with copy from the brief.
+- [ ] **[AGENT]** One landing page for the first ad angle. Policies pages.
+- **Done when:** at 390 px on staging, a visitor can land, read the product page, and add a bundle to the cart, with every state handled.
 
-### Phase 5: AI
+### Phase 5: Checkout & orders
 
-- [ ] **[HUMAN]** Create an AI Gateway; set `OPENROUTER_API_KEY` with `wrangler secret put`.
-- [ ] **[AGENT]** `ai.ts`: DeepSeek through AI Gateway, streaming, timeout + fallback model, `ai_call` event with cost, server-side quotas (trial vs. subscriber).
-- [ ] **[AGENT]** Pick models with Artificial Analysis (chapter 05): cheapest near the top per task (text, image, video, speech), then eval.
-- [ ] **[AGENT]** `evals/`: 20+ real inputs and a scoring script. Use a pricier model only if DeepSeek fails.
-- **Done when:** the core feature streams on staging, `ai_call` events show cost, and the quota blocks over-limit calls.
+- [ ] **[HUMAN]** In Stripe: turn on Apple Pay, Google Pay, Link, and Stripe Tax. Set secrets with `wrangler secret put` (agent gives the commands).
+- [ ] **[AGENT]** Guest checkout in **test mode**, email first. `/webhooks/stripe` with verified signatures and idempotent writes; it is the only writer of `orders`. Order bump, post-purchase upsell, discount codes.
+- [ ] **[AGENT]** Order lookup by magic link, admin sign-in, refund handling, fulfilment job on the Queue.
+- **Done when:** a test-mode wallet order on a phone lands in `orders`, reaches the fulfilment job, and a test refund updates it.
 
-### Phase 6: Web app
+### Phase 6: Analytics & experiments plumbing
 
-- [ ] **[AGENT]** Design tokens first (chapter 09), then landing page, core feature, settings (with account deletion), Stripe checkout in **test mode**.
-- **Done when:** a staging visitor can land, try the core action, sign in, and reach checkout, at phone width.
+- [ ] **[AGENT]** `POST /events` → Queue → Tinybird, with chapter 08 events from every screen; `order_placed` from the webhook; `error` from Worker and web. First and latest ad source saved on the visitor and copied to the order.
+- [ ] **[AGENT]** Experiment plumbing (chapter 14): KV weights, D1 assignments, `experiment_exposed` from the browser, `copy()` lookup with fail-closed control, `templates/experiments/experiment_readout.pipe` deployed to Tinybird.
+- [ ] **[AGENT]** Tinybird dashboards: funnel, revenue and margin, experiments, email, repeat rate, health. Cron alerts.
+- **Done when:** a staging run-through shows every event, a thrown test error appears in Tinybird, and a dummy experiment returns a readout with both arms.
 
-### Phase 7: iOS (then Android)
+### Phase 7: Email
 
-- [ ] **[AGENT]** SwiftUI: onboarding, core feature, settings, Sign in with Apple → Better Auth, API client, Superwall placements (`onboarding_end`, `feature_gate`, `settings_upgrade`). Build the paywall and onboarding as Superwall code surfaces in `superwall/` so variations ship without a release (chapter 14).
-- [ ] **[HUMAN]** In App Store Connect, create the app and a **$29.99/year subscription with a free trial**; connect Superwall; sign into Xcode.
-- [ ] **[AGENT]** Android (Kotlin or React Native), same flows.
-- **Done when:** the Simulator runs against staging, onboarding completes, the paywall shows, and a **sandbox** trial lands in `entitlements`.
+- [ ] **[HUMAN]** Verify sending subdomains in Cloudflare Email Service; SPF, DKIM, DMARC.
+- [ ] **[AGENT]** `emails/shell.ts` with the brand tokens. Signed one-click unsubscribe, suppression list, consent records, `List-Unsubscribe` headers, send limits.
+- [ ] **[AGENT]** Order emails (confirmation, shipped, delivered). Lists synced from D1 on a cron. Automations with the sent ledger, in rehearsal.
+- [ ] **[AGENT]** Draft the flows from chapter 10: welcome, browse abandon, cart and checkout abandon (three angles each), post-purchase, win-back. Rendered previews for the human at desktop, phone, and plain text.
+- [ ] **[HUMAN]** Approve the copy. Smoke-send each to yourself. Take automations live.
+- **Done when:** a staging order sends the confirmation email, an abandoned staging cart would send exactly one email per step in rehearsal, and unsubscribe works from a real inbox.
 
-### Phase 8: Payments & entitlements
+### Phase 8: Polish
 
-- [ ] **[AGENT]** `/webhooks/stripe` and `/webhooks/superwall`: verified signatures, idempotent writes. `GET /me/entitlements` is the only Pro check.
-- [ ] **[AGENT]** Paywall disclosures, Restore Purchases, trial-ending reminder.
-- **Done when:** a web test purchase and an iOS sandbox purchase each unlock Pro on both platforms for the same user.
-
-### Phase 9: Analytics & errors
-
-- [ ] **[AGENT]** `POST /events` → Queue → Tinybird, with chapter 08 events from every client, including `error`.
-- [ ] **[AGENT]** Experiment plumbing (chapter 14): `experiment_assignments` table, KV weights, `experiment_exposed` from clients, `templates/experiments/experiment_readout.pipe` deployed to Tinybird.
-- [ ] **[AGENT]** Tinybird pipes and dashboards: funnel (trial start %, trial → paid %), revenue, D1/D7/D30 retention, AI cost per subscriber, error rate. Cron alert on error and spend spikes.
-- **Done when:** a staging run-through shows every event and a thrown test error appears in Tinybird.
-
-### Phase 10: Onboarding, paywall & polish
-
-- [ ] **[AGENT]** Full onboarding funnel (chapter 09), modeled on the brief's reference apps.
-- [ ] **[AGENT]** Loading, empty, and error states, haptics, animation, dark mode, Dynamic Type, VoiceOver.
-- [ ] **[HUMAN]** Use it on a real phone. Taste is the human's call.
+- [ ] **[AGENT]** Loading, empty, out-of-stock, and payment-failed states. Page speed: prerender, image sizes, no layout shift. Accessibility.
+- [ ] **[AGENT]** Test in the Instagram and TikTok in-app browsers.
+- [ ] **[HUMAN]** Buy from the store on a real phone. Taste is the human's call.
 - **Done when:** the human signs off on a device.
 
-### Phase 11: Retention
+### Phase 9: Launch
 
-- [ ] **[AGENT]** Push after the first win (APNs/FCM directly), streaks, a widget if it fits, lifecycle email (welcome, trial ending, win-back), review prompt after a win.
-- **Done when:** a staging user gets the welcome email and a test push, and the trial reminder is scheduled.
+- [ ] **[AGENT]** Chapter 13 launch checklist. Every claim on the page traced to its source.
+- [ ] **[HUMAN]** Publish Privacy, Terms, Shipping, and Returns. Switch Stripe to live keys. Run the production deploy (agent prepares commands and a rollback plan). Make one real order and refund it.
+- **Done when:** a real order is paid, confirmed by email, fulfilled, and refunded, and the production health check is green.
 
-### Phase 12: Launch
+### Phase 10: First 100 orders
 
-- [ ] **[AGENT]** Chapter 13 compliance table, store listing (chapter 11 ASO checklist), privacy labels.
-- [ ] **[HUMAN]** Publish Privacy Policy and Terms, upload screenshots, submit for review, run the production deploy (agent prepares commands and a rollback plan).
-- **Done when:** the app is approved and the production health check is green.
+- [ ] **[AGENT]** A 30-day content plan (5 formats × daily posts), hooks written per awareness level, a creator brief, one landing page per ad angle, tracked links and codes.
+- [ ] **[AGENT]** Creator list (chapter 11): handle, followers, average views, niche, contact. Draft DMs.
+- [ ] **[HUMAN]** Post daily, send the DMs, ship product to creators, set the ad budget and target cost per order.
+- **Done when:** content is live, tracked links show orders, and real numbers replace the estimates in `docs/unit-economics.md`.
 
-### Phase 13: First 1,000 downloads
+### Phase 11: Grow to profit (weekly)
 
-- [ ] **[AGENT]** Share cards, referrals, universal links, a 30-day content plan (5 formats × daily posts), a creator brief, launch posts (X, LinkedIn).
-- [ ] **[AGENT]** Outreach list (chapter 11): creators on [SideShift](https://apps.apple.com/us/app/sideshift-earn-money/id6481115809) and [Trybe](https://apps.apple.com/us/app/trybe-creators/id6759299465), plus niche influencers and meme pages on Instagram and TikTok. Draft DMs and briefs, one tracking link each.
-- [ ] **[HUMAN]** Post daily, send the DMs, hire 10+ creators, launch.
-- **Done when:** content is live and tracked links show downloads. Then compare trial and paid rates to the 30% / 30% benchmark.
-
-### Phase 14: Grow to profit (weekly)
-
-- [ ] **[AGENT]** Weekly report: downloads, trial start %, trial → paid %, revenue, AI cost per subscriber, D7/D30 retention, top errors, best and worst content.
+- [ ] **[AGENT]** Weekly report: visitors, conversion rate, average order value, margin, cost per order by source, email revenue per recipient, repeat rate, refunds, top errors, best and worst creative.
 - [ ] **[AGENT]** Set up the optimizer (chapter 14): copy `templates/experiments/SCAN.md` and `DRAFT.md` to `.claude/routines/optimizer/`, fill them in, and give the human the two routines to create. DRAFT proposes one Tier A copy test a day from the biggest drop-off. SCAN launches at 10%, ramps to 50/50, and ships winners after a 24-hour veto window.
-- [ ] **[HUMAN]** Create the two routines, with a Tinybird read token and a Cloudflare token scoped to the experiments KV namespace. Merge and deploy drafts. Write `APPROVED` and `VETO` lines. Decide every Tier B change: screens, flow length, prices, trials.
-- [ ] **[AGENT]** Propose one product improvement from reviews and support.
-- [ ] **[AGENT]** When one AI workflow's bill (LLM, ASR, image generation) is large and steady, propose moving it to **Vast.ai / RunPod** GPUs, with cost math and automatic API fallback (chapter 05).
-- [ ] **[HUMAN]** Scale what works: more creators and pages, then paid ads.
+- [ ] **[HUMAN]** Create the two routines, with a Tinybird read token and a Cloudflare token scoped to the experiments KV namespace. Merge and deploy drafts. Write `APPROVED` and `VETO` lines. Decide every Tier B change.
+- [ ] **[AGENT]** Propose one offer improvement (bundle, bump, upsell, threshold) and one product-page improvement from reviews and support, with the numbers.
+- [ ] **[HUMAN]** Scale what works: more creators, more angles, then more ad spend.
 
 ---
 
@@ -172,5 +159,5 @@ Phase N: <name>: ✅ done | ⚠️ partially done | ⛔ blocked
 Done: <what changed>
 Verified: <the exact checks you ran and their result>
 Your turn: <numbered human steps with links>, or "nothing, starting Phase N+1"
-Money: <any new recurring cost> · <funnel numbers, from Phase 13 on>
+Money: <any new recurring cost> · <orders, AOV, margin, cost per order, from Phase 10 on>
 ```

@@ -1,87 +1,85 @@
-# 07 · Payments & pricing
+# 07 · Checkout, offers, and pricing
 
-> **Default:** **Superwall** on iOS/Android, **Stripe** on web, **one entitlements table** in D1. About **$30/year with a free trial**.
-> **Agent: read this when** building paywalls, purchases, webhooks, or any "is this user Pro?" check.
+> **Default:** **Stripe** Checkout with wallets first, guest checkout, an `orders` table written only by verified webhooks. Sell an offer, not a product: bundle, bonus, guarantee.
+> **Agent: read this when** building cart, checkout, discounts, order handling, or any price display.
 
-## Funnel (benchmark estimates, not targets)
+## The math (measure your own)
 
 ```
-downloads ──30%──▶ start a free trial ──30%──▶ pay $30/year
-                 ≈ 9% of downloads become paying subscribers ≈ $2.70 per download
+visitors × conversion rate × average order value = revenue
+revenue − product cost − shipping − payment fees − ad spend = contribution margin
 ```
 
-Measure your own ([12](12-costs.md)).
+There are three levers: more of the right visitors ([11](11-distribution.md)), a higher conversion rate ([06](06-screens.md), [14](14-experiments.md)), a higher order value (this chapter). Then repeat orders ([10](10-email.md)). Numbers: [12](12-costs.md).
 
-## Infra and fees (Oct 2026)
+## Infra
 
-| Platform | Use | Fees |
-|---|---|---|
-| iOS / Android | **[Superwall](https://superwall.com)**: remote paywalls and A/B tests | Free to $10k/mo paywall revenue, then 1%\* |
-| Web | **[Stripe](https://stripe.com)**: Checkout + Billing + Customer Portal | 2.9% + 30¢, plus 0.7% for Billing |
-| iOS web checkout | **[Superwall web checkout](https://superwall.com/docs/web-checkout)** (Stripe) | As above |
-| **Apple** | Subscriptions | **15%** in the [Small Business Program](https://developer.apple.com/app-store/small-business-program/) (≤ $1M/yr). Otherwise 30% year one, 15% after |
-| **Google Play** | Subscriptions | **10% + 5% billing** in US, EEA, UK (since Jun 30, 2026). 15% elsewhere |
+| Job | Use |
+|---|---|
+| Payment | **[Stripe Checkout](https://docs.stripe.com/payments/checkout)** or the Payment Element, with Apple Pay, Google Pay, and Link on |
+| Tax | **[Stripe Tax](https://docs.stripe.com/tax)** |
+| Subscriptions and refills | **[Stripe Billing](https://docs.stripe.com/billing)** + Customer Portal |
+| Discounts | Stripe coupons and promotion codes |
+| Fulfilment | Your 3PL or label provider's API, called from a Queue. **[HUMAN]** picks it |
 
-\*Superwall's pricing pages disagreed. Confirm at [superwall.com/pricing](https://superwall.com/pricing).
+Check [stripe.com/pricing](https://stripe.com/pricing) for current fees before putting a number in a plan.
 
-- **[HUMAN] Enroll in Apple's Small Business Program on day one.**
-- US storefront apps may link to web checkout. Apple's commission on those is still in court (Oct 2026). Test it.
+## The offer
 
-## Pricing
-
-1. Lead with yearly, ~$30/year, shown per week ("$0.58/week").
-2. At most one short option (weekly or monthly).
-3. Always a free trial (3 or 7 days) with a reminder before it ends.
-4. Hard paywall after the aha moment: onboarding → personalized result → paywall. Any free tier is capped daily.
-5. One abandon offer: a discounted yearly, shown once.
-6. Localize prices by storefront.
-7. Test price, trial length, and design in Superwall, one experiment at a time ([14](14-experiments.md)).
-
-These are the starting defaults. What LiftLike learned changing them is below.
+1. **Lead with a bundle.** Three options, the middle or largest marked best value, priced so the bundle is the obvious choice.
+2. **One order bump** in the cart: a small add-on, one tap.
+3. **One post-purchase upsell** on the thank-you page, charged to the same payment method with one tap. Never before payment.
+4. **A free-shipping threshold** set just above the current average order value.
+5. **Subscribe and save** for anything that runs out. Cancelling takes two taps.
+6. **A guarantee that reverses the risk.** Say it plainly and honor it without argument.
+7. **Bonuses beat discounts.** A discount lowers the price people expect. A bonus doesn't.
+8. **One abandon offer,** shown once, by email ([10](10-email.md)).
+9. **Show the total early,** shipping and tax included, as soon as you know them.
 
 ## Changing prices (from LiftLike)
 
 A price change is always the founder's decision ([14](14-experiments.md), Tier B).
 
-1. **Approve a ladder once.** A few rungs per plan and a floor, written in `docs/EXPERIMENTS.md`. Rungs at or above the floor can be tested without a new approval. LiftLike's: weekly $2.99 / $3.99 / $4.99 · monthly $12.99 / $19.99 (no trial), $19.99 / $29.99 (trial) · annual $89.99 / $119.99 / $179.99 / $239.99, floor $89.99.
-2. **Discount with an anchor.** Set the list price at exactly twice the first-year price and apply a 50% first-year coupon: $359.98 → $179.99. An anchor of $359.99 bills $180.00. Show the renewal price.
-3. **Trials on annual only.** No free trial on weekly plans.
-4. **Judge a price on paying users and cash.** Primary metric: new paying users 7 days after the trial ends. Guardrail: cash per exposed user at least 80% of control. A trial-versus-no-trial test is judged on revenue per paywall viewer. Trial starts alone will mislead you.
-5. **Start a price test on at most 20% of traffic.** 50/50 only on a clear win. 100% needs a new approval.
-6. **A user keeps the price they first saw.** Sticky assignment on, before launch.
-7. **Only test a price where the traffic can finish it.** At 34 paywall views a day a price test takes a month.
-8. **Work out who pays for a cheaper rung.** With a flat platform fee plus a percentage, a lower price comes out of the partner's payout, not the platform's. Tell partners before the test starts.
-9. **One offer is a legitimate paywall.** If you cut to a single plan, pin the CTA to the bottom of the screen. A lone card leaves the button floating mid-screen.
+1. **Approve a ladder once.** A few price points per product or bundle and a floor, written in `docs/EXPERIMENTS.md`. Rungs at or above the floor can be tested without a new approval. The floor is never below landed cost plus payment fees plus the cost to acquire the order.
+2. **Discount with an anchor.** Set the list price so the discounted price lands on the exact number you want. Half of $359.98 is $179.99; half of $359.99 bills $180.00. Only use an anchor price you really charge.
+3. **Judge a price on profit, not on orders.** Primary metric: contribution margin per visitor. Guardrail: cash per exposed visitor at least 80% of control, and refund rate not above control.
+4. **Start a price test on at most 20% of traffic.** 50/50 only on a clear win. 100% needs a new approval.
+5. **A visitor keeps the price they first saw,** on every screen and in every email, until the test ends.
+6. **Only test a price where the traffic can finish it.** Do the traffic math first ([14](14-experiments.md)).
+7. **Work out who pays for a cheaper price.** If a creator or affiliate earns a percentage, tell them before the test starts.
+8. **One offer is a legitimate page.** If you cut to a single option, pin the button to the bottom of the screen.
 
 ### Reprice checklist
 
-- [ ] Create the new price as a new object. Never edit a live price.
-- [ ] Preview an invoice against the live price and coupon. Check the amount to the cent.
-- [ ] Deploy the server before the clients.
-- [ ] Search for the old amount everywhere: paywall, emails, receipts, store screenshots, tests, deploy checks. An email that hardcodes the old number will keep sending it.
-- [ ] Derive per-week and per-month display prices from the real price in one place.
+- [ ] Create the new price as a new Stripe object. Never edit a live price.
+- [ ] Check the charged amount to the cent in test mode, with tax and shipping.
+- [ ] Deploy the server before the pages.
+- [ ] Search for the old amount everywhere: pages, emails, ads, receipts, tests. An email that hardcodes the old number will keep sending it.
+- [ ] Derive every "per unit" and "you save" number from the real price in one place.
 - [ ] Make one real purchase and refund it.
 - [ ] Record the change in `docs/EXPERIMENTS.md`.
 
-## Entitlements
+## Orders
 
-The `entitlements` table ([03](03-database.md)) is written **only** by verified webhooks:
-- `POST /webhooks/stripe`: verify with `stripe.webhooks.constructEventAsync`.
-- `POST /webhooks/superwall`: App Store and Play events via Superwall. Verify the signature.
+The `orders` table ([03](03-database.md)) is written **only** by `POST /webhooks/stripe`, verified with `stripe.webhooks.constructEventAsync`. Writes are idempotent, keyed by event id.
 
-Writes are idempotent (keyed by event id). All clients call `GET /me/entitlements`, so a purchase on any platform unlocks all.
+- The browser never decides that an order is paid. The thank-you page reads the order from the server.
+- Prices, stock, discounts, and shipping are computed on the server. The cart the browser sends is a request, not a fact.
+- Refunds and disputes arrive by webhook and update the order.
+- Fulfilment is a Queue job triggered by the paid order, safe to run twice.
 
-## Paywall checklist (App Store review)
+## Checkout checklist
 
-- [ ] Price, period, trial length, "auto-renews until cancelled" shown
-- [ ] Links to Terms (EULA) and Privacy
-- [ ] **Restore Purchases**
-- [ ] Visible close button, no dark patterns
-- [ ] Trial-ending reminder scheduled
-- [ ] `paywall_viewed`, `trial_started`, `subscription_started` fire with the variant id
+- [ ] Guest checkout, email asked first
+- [ ] Wallet buttons above the card form
+- [ ] Total, shipping, tax, and delivery estimate visible before payment
+- [ ] Returns and guarantee one tap away
+- [ ] Subscription terms stated next to the button: price, how often, how to cancel
+- [ ] Failed payment shows a clear message and keeps the cart
+- [ ] `checkout_started`, `payment_submitted`, `order_placed` fire with the experiment and variant
+- [ ] Works in the Instagram and TikTok in-app browsers on a real phone
 
 ## Resources
 
-- [Superwall docs](https://superwall.com/docs) · [Superwall paywall gallery](https://superwall.com/applications) · [Superwall blog](https://superwall.com/blog)
-- [Stripe Billing](https://docs.stripe.com/billing) · [Stripe webhooks](https://docs.stripe.com/webhooks)
-- [App Store subscriptions](https://developer.apple.com/app-store/subscriptions/)
+- [Stripe Checkout](https://docs.stripe.com/payments/checkout) · [Stripe webhooks](https://docs.stripe.com/webhooks) · [Stripe Tax](https://docs.stripe.com/tax)
+- [Baymard: checkout usability](https://baymard.com/research/checkout-usability) · *$100M Offers* ([15](15-copy.md))

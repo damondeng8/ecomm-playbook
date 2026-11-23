@@ -7,29 +7,29 @@
 
 | Data | Store |
 |---|---|
-| Users, subscriptions, app records | **D1** |
-| One chat / room / user's live state | **Durable Object** (SQLite) |
+| Products, carts, orders, customers, email ledger | **D1** |
+| Stock counters under load | **Durable Object** (SQLite) |
 | Config, flags, cached reads | **KV** |
-| Photos, audio, media | **R2** (key in D1) |
+| Product images and video | **R2** (key in D1) |
 | Embeddings | **Vectorize** |
 
 ## Plain SQL
 
 ```ts
-const meals = await env.DB
-  .prepare("SELECT id, calories, created_at FROM meals WHERE user_id = ? ORDER BY created_at DESC LIMIT 50")
-  .bind(user.id)
+const orders = await env.DB
+  .prepare("SELECT id, total_cents, status, created_at FROM orders WHERE customer_id = ? ORDER BY created_at DESC LIMIT 50")
+  .bind(customer.id)
   .all();
 ```
 
 - Always `prepare().bind()`. No string-built SQL.
 - `env.DB.batch([...])` for multi-statement writes.
-- Queries live next to the feature (`meals.ts`), one typed function each.
+- Queries live next to the feature (`orders.ts`), one typed function each.
 
 ## Migrations
 
 ```bash
-wrangler d1 migrations create DB add_meals           # creates migrations/000N_add_meals.sql
+wrangler d1 migrations create DB add_orders          # creates migrations/000N_add_orders.sql
 wrangler d1 migrations apply DB --local               # dev
 wrangler d1 migrations apply DB --env staging --remote
 wrangler d1 migrations apply DB --env production --remote   # humans only
@@ -40,20 +40,31 @@ Every schema change is a migration in git. Never hand-edit production.
 ## Starter tables
 
 ```sql
--- Better Auth creates: user, session, account, verification (see 04 · Auth)
-CREATE TABLE entitlements (
-  user_id TEXT NOT NULL, entitlement TEXT NOT NULL,         -- 'pro'
-  source TEXT NOT NULL,                                     -- 'app_store' | 'play' | 'stripe'
-  product_id TEXT, status TEXT NOT NULL,                    -- trialing | active | grace | expired | refunded
-  current_period_end INTEGER, original_transaction_id TEXT,
-  updated_at INTEGER NOT NULL,
-  PRIMARY KEY (user_id, entitlement)
+-- Better Auth creates: user, session, account, verification (see 04)
+CREATE TABLE products (id TEXT PRIMARY KEY, slug TEXT UNIQUE NOT NULL, name TEXT NOT NULL, status TEXT NOT NULL, created_at INTEGER NOT NULL);
+CREATE TABLE variants (                                     -- the thing you ship; price lives here
+  id TEXT PRIMARY KEY, product_id TEXT NOT NULL, sku TEXT UNIQUE NOT NULL, name TEXT NOT NULL,
+  price_cents INTEGER NOT NULL, cost_cents INTEGER NOT NULL, stock INTEGER NOT NULL, stripe_price_id TEXT
 );
-CREATE TABLE usage_ledger (                                 -- append-only: AI calls, credits
-  id TEXT PRIMARY KEY, user_id TEXT NOT NULL, feature TEXT NOT NULL,
-  units INTEGER NOT NULL, cost_micros INTEGER NOT NULL, created_at INTEGER NOT NULL
+CREATE TABLE carts (                                        -- keyed by visitor; abandoned-cart emails read this
+  id TEXT PRIMARY KEY, visitor_id TEXT NOT NULL, email TEXT, items TEXT NOT NULL,   -- JSON
+  status TEXT NOT NULL, created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL
 );
-CREATE INDEX usage_user_day ON usage_ledger (user_id, created_at);
+CREATE TABLE orders (                                       -- written only by the Stripe webhook
+  id TEXT PRIMARY KEY, visitor_id TEXT, customer_id TEXT, email TEXT NOT NULL,
+  status TEXT NOT NULL,                                     -- paid | fulfilled | refunded | disputed
+  total_cents INTEGER NOT NULL, margin_cents INTEGER NOT NULL, items TEXT NOT NULL,
+  stripe_event_id TEXT UNIQUE NOT NULL, utm TEXT, experiments TEXT, created_at INTEGER NOT NULL
+);
+CREATE TABLE experiment_assignments (                       -- a visitor keeps their arm (14)
+  visitor_id TEXT NOT NULL, experiment_id TEXT NOT NULL, variant TEXT NOT NULL, assigned_at INTEGER NOT NULL,
+  PRIMARY KEY (visitor_id, experiment_id)
+);
+CREATE TABLE email_consent (email TEXT PRIMARY KEY, status TEXT NOT NULL, source TEXT NOT NULL, updated_at INTEGER NOT NULL);
+CREATE TABLE email_ledger (                                 -- written BEFORE the send: at most once (10)
+  automation_id TEXT NOT NULL, email TEXT NOT NULL, sent_at INTEGER NOT NULL,
+  PRIMARY KEY (automation_id, email)
+);
 ```
 
 ULIDs or UUIDv7 for ids. Never expose auto-increment ids.
