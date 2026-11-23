@@ -20,7 +20,7 @@ Worker errors ──────────────────────
 app_opened              {platform, app_version}
 onboarding_step         {step, index}
 onboarding_completed
-paywall_viewed          {placement, variant}
+paywall_viewed          {placement, experiment_id, variant}
 trial_started           {product_id, price}
 subscription_started    {product_id, price, store}
 subscription_renewed / subscription_cancelled / refunded
@@ -42,9 +42,10 @@ error                   {source: api|ios|android|web, message, stack, route, app
 
 1. Funnel: download → onboarding complete → paywall view → trial start → paid.
 2. Revenue: new, refunds, renewals, by paywall variant.
-3. Retention: D1 / D7 / D30 by install cohort.
-4. AI: cost per subscriber, cost per feature, p95 latency, errors by model.
-5. Health: error rate by source and app version.
+3. Experiments: exposures, trial starts, proceeds per exposure, and refunds by `experiment_id` and `variant` ([14](14-experiments.md)).
+4. Retention: D1 / D7 / D30 by install cohort.
+5. AI: cost per subscriber, cost per feature, p95 latency, errors by model.
+6. Health: error rate by source and app version.
 
 ## Resources
 

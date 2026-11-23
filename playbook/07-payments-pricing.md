@@ -35,7 +35,7 @@ Measure your own ([12](12-costs.md)).
 4. Hard paywall after the aha moment: onboarding → personalized result → paywall. Any free tier is capped daily.
 5. One abandon offer: a discounted yearly, shown once.
 6. Localize prices by storefront.
-7. Test price, trial length, and design in Superwall.
+7. Test price, trial length, and design in Superwall, one experiment at a time ([14](14-experiments.md)).
 
 ## Entitlements
 

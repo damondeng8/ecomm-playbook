@@ -1,0 +1,17 @@
+{
+  "ladder": [10, 25],
+  "minStageDays": 2,
+  "minStageExposures": 200,
+  "advanceAbove": 0.2,
+  "killBelow": 0.05,
+  "minKillExposures": 500,
+  "minDecisionDays": 7,
+  "minDecisionExposures": 1000,
+  "minDecisionConversions": 30,
+  "winAbove": 0.95,
+  "maxDecisionDays": 28,
+  "maxProceedsDrop": 0.2,
+  "maxRefundRateIncrease": 0.05,
+  "autoRamp": false,
+  "autoPromote": false
+}

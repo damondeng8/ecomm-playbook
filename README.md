@@ -1,22 +1,14 @@
+# App playbook
+
+How I build useful, profitable apps: one stack, a phase-by-phase checklist for coding agents, and an experiment loop where Claude writes the variations and the numbers ramp them.
+
+Based on Blake Anderson's [ai-app-playbook](https://github.com/blakeandersonw/ai-app-playbook) (MIT). The stack and chapters 00–13 are his. Chapter 14 and `templates/experiments/` are added here.
+
+To start an app, open Claude Code in an empty folder and say:
+
 ```
-Clone https://github.com/blakeandersonw/ai-app-playbook and read AGENTS.md
+Read ~/app-playbook/AGENTS.md and start Phase 0
 ```
-
-Paste into Claude Code or OpenCode, in an empty folder.
-
-Please [follow me](https://github.com/blakeandersonw) and star this repo to stay up to date!
-
-[![Follow @blakeandersonw](https://img.shields.io/github/followers/blakeandersonw?label=Follow&style=social)](https://github.com/blakeandersonw) [![Star this repo](https://img.shields.io/github/stars/blakeandersonw/ai-app-playbook?label=Star&style=social)](https://github.com/blakeandersonw/ai-app-playbook)
-
-<p align="center">
-  <img src="assets/playbook.png" alt="Useful App Playbook" width="100%">
-</p>
-
-# How to build useful, profitable apps in 2026
-
-My background: I've scaled 5 apps to $100k+ MRR in the past 3 years.
-
-This is the stack I would start with today. We initially built [EcoGPT](https://ecogpt.com) ([apply here](https://ecogpt.com/careers/founding-engineer)) on this stack.
 
 Good apps help people get fit, focus, learn, or feel calmer, and people pay for them. This playbook goes from picking a problem to your first profitable month.
 
@@ -38,7 +30,7 @@ Good apps help people get fit, focus, learn, or feel calmer, and people pay for 
 | 0 · Niche | Pick a frequent problem AI solves in seconds. Test it with 10 videos and a waitlist | Score ≥ 25/35, real demand |
 | 1–12 · Build | Brief, repo, backend, auth, AI, web, iOS/Android, payments, analytics, onboarding, retention, launch | "Done when" per phase |
 | 13 · First 1,000 | Short-form video, creators on SideShift / Trybe, DMs to influencers and meme pages | Content live and tracked |
-| 14 · Grow | Weekly: one funnel experiment, one product fix | Weekly report |
+| 14 · Grow | One experiment always running per surface: Claude writes the variation, traffic ramps 10% → 25% → 50/50, a human promotes the winner | Weekly report, experiment log |
 
 ## The stack
 
@@ -104,9 +96,10 @@ Per 1,000 users per month.
 | 11 | [Distribution](playbook/11-distribution.md) | Short-form, creators, DMs, ASO |
 | 12 | [Costs](playbook/12-costs.md) | Numbers and sources |
 | 13 | [Security & compliance](playbook/13-security-privacy-compliance.md) | Spend caps, privacy, App Store review |
+| 14 | [Experiments](playbook/14-experiments.md) | Claude-written variations, automated ramping, guardrails |
 
-**Templates:** [`worker.ts`](templates/worker.ts) · [`auth.ts`](templates/auth.ts) · [`wrangler.jsonc`](templates/wrangler.jsonc) · [`AGENTS.app.md`](templates/AGENTS.app.md) · [`dev.vars.example`](templates/dev.vars.example)
+**Templates:** [`worker.ts`](templates/worker.ts) · [`auth.ts`](templates/auth.ts) · [`wrangler.jsonc`](templates/wrangler.jsonc) · [`AGENTS.app.md`](templates/AGENTS.app.md) · [`dev.vars.example`](templates/dev.vars.example) · [`experiments/`](templates/experiments/) · [`claude/commands/`](templates/claude/commands/)
 
 ---
 
-MIT © Blake Anderson
+MIT © Blake Anderson, with modifications © Damon Deng

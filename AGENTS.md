@@ -31,7 +31,8 @@ Walk the human through every phase in order. Do **[AGENT]** steps yourself. Give
 6. All server logic runs on Cloudflare. Keys never ship in clients.
 7. Staging first. Never touch production data or run production deploys or migrations.
 8. Before saying done: run checks and tests, and look at the running app.
-9. Build fast (chapter 01): core loop end to end on day 1, fake what isn't built, copy flows from references, ship to TestFlight daily, park other ideas in `docs/later.md`.
+9. Experiments (chapter 14): the agent writes variations and proposes traffic changes. It moves live traffic only as far as `experiments/policy.json` allows, which by default means it proposes and the human applies. It never changes a price or a trial length, and never starts an experiment, on its own.
+10. Build fast (chapter 01): core loop end to end on day 1, fake what isn't built, copy flows from references, ship to TestFlight daily, park other ideas in `docs/later.md`.
 
 ## Chapters by phase
 
@@ -48,9 +49,9 @@ Walk the human through every phase in order. Do **[AGENT]** steps yourself. Give
 | 9 Analytics | [08 · Analytics & errors](playbook/08-analytics-observability.md) |
 | 11 Retention | [10 · Retention](playbook/10-retention.md) |
 | 12 Launch | [13 · Security & compliance](playbook/13-security-privacy-compliance.md) |
-| 13–14 Grow | [11 · Distribution](playbook/11-distribution.md), [12 · Costs](playbook/12-costs.md) |
+| 13–14 Grow | [11 · Distribution](playbook/11-distribution.md), [12 · Costs](playbook/12-costs.md), [14 · Experiments](playbook/14-experiments.md) |
 
-Templates in [`templates/`](templates/): `AGENTS.app.md`, `worker.ts`, `auth.ts`, `wrangler.jsonc`, `dev.vars.example`. Prefer linked docs over memory. Cloudflare's agent index: <https://developers.cloudflare.com/llms.txt>.
+Templates in [`templates/`](templates/): `AGENTS.app.md`, `worker.ts`, `auth.ts`, `wrangler.jsonc`, `dev.vars.example`, `experiments/` (ramp engine, policy, record template), `claude/commands/` (`/experiment-new`, `/experiment-tick`). Prefer linked docs over memory. Cloudflare's agent index: <https://developers.cloudflare.com/llms.txt>.
 
 ---
 
@@ -78,7 +79,7 @@ Copy into the app's `docs/progress.md`. Update it and show it after every phase.
 - [ ] **[HUMAN]** Create accounts (send only the ones needed):
   [Cloudflare](https://dash.cloudflare.com/sign-up) (Workers Paid + domain) · [GitHub](https://github.com) · [OpenRouter](https://openrouter.ai) (credits + key) · [Apple Developer](https://developer.apple.com/programs/enroll/) (start first; takes days) + [Small Business Program](https://developer.apple.com/app-store/small-business-program/) · [Google Play Console](https://play.google.com/console/signup) · [Superwall](https://superwall.com) · [Stripe](https://dashboard.stripe.com/register) · [Tinybird](https://www.tinybird.co)
 - [ ] **[HUMAN]** Run `npx wrangler login` and `gh auth login`.
-- [ ] **[AGENT]** Scaffold `apps/api` (from `templates/worker.ts` + `templates/wrangler.jsonc`), `apps/web` (`npm create cloudflare@latest -- apps/web --framework=react`), `apps/ios`, `apps/android`, `docs/decisions`. Copy `templates/AGENTS.app.md` to `AGENTS.md` and fill it in; add `CLAUDE.md` containing `@AGENTS.md`. Root scripts: `dev`, `check`, `test`, `deploy:staging`, `deploy:production`. Gitignore `.dev.vars*`, `.wrangler`, `node_modules`, `DerivedData`.
+- [ ] **[AGENT]** Scaffold `apps/api` (from `templates/worker.ts` + `templates/wrangler.jsonc`), `apps/web` (`npm create cloudflare@latest -- apps/web --framework=react`), `apps/ios`, `apps/android`, `docs/decisions`. Copy `templates/AGENTS.app.md` to `AGENTS.md` and fill it in; add `CLAUDE.md` containing `@AGENTS.md`. Root scripts: `dev`, `check`, `test`, `deploy:staging`, `deploy:production`. Copy `templates/experiments/` to `experiments/` and `templates/claude/commands/` to `.claude/commands/`. Gitignore `.dev.vars*`, `.wrangler`, `node_modules`, `DerivedData`.
 - **Done when:** `bun run check && bun test` passes and the first commit is pushed.
 
 ### Phase 3: Backend + database
@@ -110,7 +111,7 @@ Copy into the app's `docs/progress.md`. Update it and show it after every phase.
 
 ### Phase 7: iOS (then Android)
 
-- [ ] **[AGENT]** SwiftUI: onboarding, core feature, settings, Sign in with Apple → Better Auth, API client, Superwall placements (`onboarding_end`, `feature_gate`, `settings_upgrade`).
+- [ ] **[AGENT]** SwiftUI: onboarding, core feature, settings, Sign in with Apple → Better Auth, API client, Superwall placements (`onboarding_end`, `feature_gate`, `settings_upgrade`). Build the paywall and onboarding as Superwall code surfaces in `superwall/` so variations ship without a release (chapter 14).
 - [ ] **[HUMAN]** In App Store Connect, create the app and a **$29.99/year subscription with a free trial**; connect Superwall; sign into Xcode.
 - [ ] **[AGENT]** Android (Kotlin or React Native), same flows.
 - **Done when:** the Simulator runs against staging, onboarding completes, the paywall shows, and a **sandbox** trial lands in `entitlements`.
@@ -155,7 +156,9 @@ Copy into the app's `docs/progress.md`. Update it and show it after every phase.
 ### Phase 14: Grow to profit (weekly)
 
 - [ ] **[AGENT]** Weekly report: downloads, trial start %, trial → paid %, revenue, AI cost per subscriber, D7/D30 retention, top errors, best and worst content.
-- [ ] **[AGENT]** Propose one onboarding or paywall experiment and one product improvement from reviews and support.
+- [ ] **[AGENT]** Keep one experiment running per surface (chapter 14): `/experiment-new` writes the hypothesis and builds the variation, `/experiment-tick` runs daily and ramps 10% → 25% → equal split, stops losers, and proposes winners.
+- [ ] **[HUMAN]** Approve each experiment's start and each promotion to 100%. Create any new price or trial product.
+- [ ] **[AGENT]** Propose one product improvement from reviews and support.
 - [ ] **[AGENT]** When one AI workflow's bill (LLM, ASR, image generation) is large and steady, propose moving it to **Vast.ai / RunPod** GPUs, with cost math and automatic API fallback (chapter 05).
 - [ ] **[HUMAN]** Scale what works: more creators and pages, then paid ads.
 
