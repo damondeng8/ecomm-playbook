@@ -37,6 +37,32 @@ Measure your own ([12](12-costs.md)).
 6. Localize prices by storefront.
 7. Test price, trial length, and design in Superwall, one experiment at a time ([14](14-experiments.md)).
 
+These are the starting defaults. What LiftLike learned changing them is below.
+
+## Changing prices (from LiftLike)
+
+A price change is always the founder's decision ([14](14-experiments.md), Tier B).
+
+1. **Approve a ladder once.** A few rungs per plan and a floor, written in `docs/EXPERIMENTS.md`. Rungs at or above the floor can be tested without a new approval. LiftLike's: weekly $2.99 / $3.99 / $4.99 · monthly $12.99 / $19.99 (no trial), $19.99 / $29.99 (trial) · annual $89.99 / $119.99 / $179.99 / $239.99, floor $89.99.
+2. **Discount with an anchor.** Set the list price at exactly twice the first-year price and apply a 50% first-year coupon: $359.98 → $179.99. An anchor of $359.99 bills $180.00. Show the renewal price.
+3. **Trials on annual only.** No free trial on weekly plans.
+4. **Judge a price on paying users and cash.** Primary metric: new paying users 7 days after the trial ends. Guardrail: cash per exposed user at least 80% of control. A trial-versus-no-trial test is judged on revenue per paywall viewer. Trial starts alone will mislead you.
+5. **Start a price test on at most 20% of traffic.** 50/50 only on a clear win. 100% needs a new approval.
+6. **A user keeps the price they first saw.** Sticky assignment on, before launch.
+7. **Only test a price where the traffic can finish it.** At 34 paywall views a day a price test takes a month.
+8. **Work out who pays for a cheaper rung.** With a flat platform fee plus a percentage, a lower price comes out of the partner's payout, not the platform's. Tell partners before the test starts.
+9. **One offer is a legitimate paywall.** If you cut to a single plan, pin the CTA to the bottom of the screen. A lone card leaves the button floating mid-screen.
+
+### Reprice checklist
+
+- [ ] Create the new price as a new object. Never edit a live price.
+- [ ] Preview an invoice against the live price and coupon. Check the amount to the cent.
+- [ ] Deploy the server before the clients.
+- [ ] Search for the old amount everywhere: paywall, emails, receipts, store screenshots, tests, deploy checks. An email that hardcodes the old number will keep sending it.
+- [ ] Derive per-week and per-month display prices from the real price in one place.
+- [ ] Make one real purchase and refund it.
+- [ ] Record the change in `docs/EXPERIMENTS.md`.
+
 ## Entitlements
 
 The `entitlements` table ([03](03-database.md)) is written **only** by verified webhooks:

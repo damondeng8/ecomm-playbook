@@ -16,7 +16,7 @@ $<30>/year, <3>-day free trial. Benchmarks (estimates): ~30% trial start, ~30% t
 - AI: DeepSeek via OpenRouter behind AI Gateway (`apps/api/src/ai.ts`), prompts in `apps/api/prompts/`
 - Payments: Superwall (mobile), Stripe (web); `entitlements` table is the source of truth
 - Analytics and errors: Tinybird via `POST /events`
-- Experiments: paywall and onboarding as Superwall code surfaces (`superwall/`); records, policy, and the ramp engine in `experiments/`
+- Experiments: paywall and onboarding as Superwall code surfaces (`superwall/`); approvals in `docs/EXPERIMENTS.md`; routine prompts in `.claude/routines/optimizer/`
 - iOS: SwiftUI (`apps/ios`) · Android: <React Native | Kotlin> (`apps/android`) · Web: React + Vite (`apps/web`) on Workers static assets
 
 ## Commands
@@ -31,8 +31,6 @@ $<30>/year, <3>-day free trial. Benchmarks (estimates): ~30% trial start, ~30% t
 | Apply migrations (staging) | `wrangler d1 migrations apply DB --env staging --remote` |
 | Deploy staging | `bun run deploy:staging` |
 | Deploy production | `bun run deploy:production` (**humans only**) |
-| New experiment | `/experiment-new` (builds a variation, starts nothing) |
-| Check experiments | `/experiment-tick` (daily) |
 
 ## Rules
 
@@ -45,7 +43,7 @@ $<30>/year, <3>-day free trial. Benchmarks (estimates): ~30% trial start, ~30% t
 7. Schema changes are SQL migrations, staging first.
 8. Never touch production data, deploy to production, or commit secrets.
 9. Decisions go in `docs/decisions/NNNN-title.md`.
-10. Experiments: one change per variation, a record in `experiments/` before any traffic, weights only as `experiments/ramp.ts` returns and `policy.json` allows. Prices, trial lengths, experiment starts, and 100% rollouts are the human's.
+10. Experiments: Tier A (copy, CTA labels, weights) is yours. Tier B (screens, flow length, prices, trials, paywall structure, Stripe and the stores) needs an `APPROVED` line in `docs/EXPERIMENTS.md`. Never act against a `VETO` line. Never ramp a feature until the founder says so.
 
 ## Done means
 

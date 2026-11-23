@@ -1,8 +1,8 @@
 # App playbook
 
-How I build useful, profitable apps: one stack, a phase-by-phase checklist for coding agents, and an experiment loop where Claude writes the variations and the numbers ramp them.
+How I build useful, profitable apps: one stack, a phase-by-phase checklist for coding agents, and the experiment ownership and pricing rules from LiftLike.
 
-Based on Blake Anderson's [ai-app-playbook](https://github.com/blakeandersonw/ai-app-playbook) (MIT). The stack and chapters 00–13 are his. Chapter 14 and `templates/experiments/` are added here.
+Based on Blake Anderson's [ai-app-playbook](https://github.com/blakeandersonw/ai-app-playbook) (MIT). The stack and chapters 00–13 are his. Chapter 14, the pricing lessons in chapter 07, and `templates/experiments/` come from running LiftLike.
 
 To start an app, open Claude Code in an empty folder and say:
 
@@ -30,7 +30,7 @@ Good apps help people get fit, focus, learn, or feel calmer, and people pay for 
 | 0 · Niche | Pick a frequent problem AI solves in seconds. Test it with 10 videos and a waitlist | Score ≥ 25/35, real demand |
 | 1–12 · Build | Brief, repo, backend, auth, AI, web, iOS/Android, payments, analytics, onboarding, retention, launch | "Done when" per phase |
 | 13 · First 1,000 | Short-form video, creators on SideShift / Trybe, DMs to influencers and meme pages | Content live and tracked |
-| 14 · Grow | One experiment always running per surface: Claude writes the variation, traffic ramps 10% → 25% → 50/50, a human promotes the winner | Weekly report, experiment log |
+| 14 · Grow | Agent drafts and ramps copy tests (10% → 50/50 → ship after a 24-hour veto window). Founder approves screens and prices | Weekly report, experiment ledger |
 
 ## The stack
 
@@ -96,9 +96,9 @@ Per 1,000 users per month.
 | 11 | [Distribution](playbook/11-distribution.md) | Short-form, creators, DMs, ASO |
 | 12 | [Costs](playbook/12-costs.md) | Numbers and sources |
 | 13 | [Security & compliance](playbook/13-security-privacy-compliance.md) | Spend caps, privacy, App Store review |
-| 14 | [Experiments](playbook/14-experiments.md) | Claude-written variations, automated ramping, guardrails |
+| 14 | [Experiments](playbook/14-experiments.md) | Who owns what, the ledger, SCAN and DRAFT routines, price tests |
 
-**Templates:** [`worker.ts`](templates/worker.ts) · [`auth.ts`](templates/auth.ts) · [`wrangler.jsonc`](templates/wrangler.jsonc) · [`AGENTS.app.md`](templates/AGENTS.app.md) · [`dev.vars.example`](templates/dev.vars.example) · [`experiments/`](templates/experiments/) · [`claude/commands/`](templates/claude/commands/)
+**Templates:** [`worker.ts`](templates/worker.ts) · [`auth.ts`](templates/auth.ts) · [`wrangler.jsonc`](templates/wrangler.jsonc) · [`AGENTS.app.md`](templates/AGENTS.app.md) · [`dev.vars.example`](templates/dev.vars.example) · [`experiments/`](templates/experiments/)
 
 ---
 
