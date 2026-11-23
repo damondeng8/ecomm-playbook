@@ -51,7 +51,7 @@ Walk the human through every phase in order. Do **[AGENT]** steps yourself. Give
 | 12 Launch | [13 · Security & compliance](playbook/13-security-privacy-compliance.md) |
 | 13–14 Grow | [11 · Distribution](playbook/11-distribution.md), [12 · Costs](playbook/12-costs.md), [14 · Experiments](playbook/14-experiments.md) |
 
-Templates in [`templates/`](templates/): `AGENTS.app.md`, `worker.ts`, `auth.ts`, `wrangler.jsonc`, `dev.vars.example`, `experiments/` (`EXPERIMENTS.md` ledger, `SCAN.md` and `DRAFT.md` routine prompts). Prefer linked docs over memory. Cloudflare's agent index: <https://developers.cloudflare.com/llms.txt>.
+Templates in [`templates/`](templates/): `AGENTS.app.md`, `worker.ts`, `auth.ts`, `wrangler.jsonc`, `dev.vars.example`, `experiments/` (`EXPERIMENTS.md` ledger, `SCAN.md` and `DRAFT.md` routine prompts, `experiment_readout.pipe` for Tinybird). Prefer linked docs over memory. Cloudflare's agent index: <https://developers.cloudflare.com/llms.txt>.
 
 ---
 
@@ -125,6 +125,7 @@ Copy into the app's `docs/progress.md`. Update it and show it after every phase.
 ### Phase 9: Analytics & errors
 
 - [ ] **[AGENT]** `POST /events` → Queue → Tinybird, with chapter 08 events from every client, including `error`.
+- [ ] **[AGENT]** Experiment plumbing (chapter 14): `experiment_assignments` table, KV weights, `experiment_exposed` from clients, `templates/experiments/experiment_readout.pipe` deployed to Tinybird.
 - [ ] **[AGENT]** Tinybird pipes and dashboards: funnel (trial start %, trial → paid %), revenue, D1/D7/D30 retention, AI cost per subscriber, error rate. Cron alert on error and spend spikes.
 - **Done when:** a staging run-through shows every event and a thrown test error appears in Tinybird.
 
@@ -157,7 +158,7 @@ Copy into the app's `docs/progress.md`. Update it and show it after every phase.
 
 - [ ] **[AGENT]** Weekly report: downloads, trial start %, trial → paid %, revenue, AI cost per subscriber, D7/D30 retention, top errors, best and worst content.
 - [ ] **[AGENT]** Set up the optimizer (chapter 14): copy `templates/experiments/SCAN.md` and `DRAFT.md` to `.claude/routines/optimizer/`, fill them in, and give the human the two routines to create. DRAFT proposes one Tier A copy test a day from the biggest drop-off. SCAN launches at 10%, ramps to 50/50, and ships winners after a 24-hour veto window.
-- [ ] **[HUMAN]** Create the two routines. Merge and deploy drafts. Write `APPROVED` and `VETO` lines. Decide every Tier B change: screens, flow length, prices, trials.
+- [ ] **[HUMAN]** Create the two routines, with a Tinybird read token and a Cloudflare token scoped to the experiments KV namespace. Merge and deploy drafts. Write `APPROVED` and `VETO` lines. Decide every Tier B change: screens, flow length, prices, trials.
 - [ ] **[AGENT]** Propose one product improvement from reviews and support.
 - [ ] **[AGENT]** When one AI workflow's bill (LLM, ASR, image generation) is large and steady, propose moving it to **Vast.ai / RunPod** GPUs, with cost math and automatic API fallback (chapter 05).
 - [ ] **[HUMAN]** Scale what works: more creators and pages, then paid ads.

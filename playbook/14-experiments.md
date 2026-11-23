@@ -1,6 +1,6 @@
 # 14 · Experiments and ramp ownership
 
-> **Default:** the agent owns copy tests and traffic weights. The founder owns screens, flow length, prices, and anything that touches money. One ledger file records every approval and veto. This is the system LiftLike ran, moved onto this stack.
+> **Default:** the agent owns copy tests and traffic weights. The founder owns screens, flow length, prices, and anything that touches money. One ledger file records every approval and veto. **Tinybird** is the only source of numbers. This is the system LiftLike ran, moved onto this stack.
 > **Agent: read this when** proposing, launching, ramping, ending, or shipping an experiment, or ramping a new feature.
 
 ## Who owns what
@@ -40,6 +40,25 @@ Both are Claude Code routines (scheduled cloud sessions) with the repo checked o
 Attach only the connectors a routine needs. A new routine gets all of them by default.
 
 **Kill switch:** KV key `optimizer-enabled`. SCAN reads it first. Off means it writes one line and stops.
+
+## How it runs on this stack
+
+```
+Worker assigns the arm (weights in KV, saved in D1) ──▶ client shows it, sends experiment_exposed
+        ▲                                                              │
+        │                                                              ▼
+SCAN writes new weights to KV ◀── state machine ◀── Tinybird endpoint experiment_readout
+```
+
+| Job | Where |
+|---|---|
+| Weights | KV key `experiment:<key>`: `{"status":"running","arms":{"control":90,"test":10}}`. Changing weights is a KV write, no deploy |
+| Assignment | The Worker picks an arm by weight the first time a user reaches the surface and saves it in D1 (`experiment_assignments`, one row per user and experiment). Later weight changes only affect new users, so nobody switches arm |
+| Exposure | The client sends `experiment_exposed {experiment_id, variant}` once, when the surface is on screen |
+| Numbers | Tinybird endpoint [`experiment_readout`](../templates/experiments/experiment_readout.pipe): per arm, exposed, converted, checkout and paying users, cash, lift and p-value against control |
+| Annotations | A line in the ledger and the run record |
+
+For a native paywall that Superwall splits, set the weights with `superwall campaigns variants weights` and send `experiment_exposed` with Superwall's experiment and variant ids. The numbers still come from Tinybird.
 
 ## State machine (SCAN, Tier A)
 
@@ -96,8 +115,9 @@ Each of these cost LiftLike days.
 
 ## Reading results
 
-- **One source of truth for numbers.** Superwall's readout for paywall arms, Tinybird for everything else. Never invent a number. If a read fails, record `READ FAILED` and take no action.
-- **Cross-check exposures with SQL.** Vendor results can be cached for hours. Count exposure events per arm yourself.
+- **One source of truth for numbers: Tinybird.** Never invent a number. If a read fails, record `READ FAILED` and take no action.
+- **The p-value is a plain two-proportion test**, and SCAN looks every 4 hours. Looking that often finds false winners. So a winner must be PROVEN on two records at least 24 hours apart before it ships, and paywall tests wait 7 full days.
+- **Sample ratio check:** compare exposed users per arm with the weights. For two arms, χ² above 10.83 is p < 0.001. Only compare users assigned since the last weight change.
 - **Zero exposures after a day means it is broken**, not slow. Check the exposure event and the eligibility rule.
 - **Do the traffic math first.** At about 1,200 onboarding starts and 34 paywall views a day, 500 exposures per arm took under a day at the top of the funnel, a month at the paywall, and over four months at checkout. Don't run tests that can't finish.
 - **Don't split traffic too thin.** A test on one entry link that gets four visits a day is unreadable. No segment cells, no custom bandit: the traffic can't fill them.
@@ -123,5 +143,5 @@ The agent never ramps a feature on its own judgment.
 
 ## Resources
 
-- [Superwall docs](https://superwall.com/docs) · `superwall api docs experiment` · [Claude Code routines](https://claude.ai/code/routines)
-- [Tinybird docs](https://www.tinybird.co/docs)
+- [Tinybird docs](https://www.tinybird.co/docs) · [Tinybird endpoints](https://www.tinybird.co/docs/publish/api-endpoints) · [Workers KV](https://developers.cloudflare.com/kv/)
+- [Claude Code routines](https://claude.ai/code/routines) · [Superwall docs](https://superwall.com/docs)

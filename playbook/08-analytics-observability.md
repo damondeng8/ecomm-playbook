@@ -43,7 +43,7 @@ error                   {source: api|ios|android|web, message, stack, route, app
 
 1. Funnel: download → onboarding complete → paywall view → trial start → paid.
 2. Revenue: new, refunds, renewals, by paywall variant.
-3. Experiments: exposures, checkout starts, new paying users, and cash per exposed user by `experiment_id` and `variant` ([14](14-experiments.md)).
+3. Experiments: exposures, checkout starts, new paying users, and cash per exposed user by `experiment_id` and `variant` ([14](14-experiments.md)), from the [`experiment_readout`](../templates/experiments/experiment_readout.pipe) endpoint.
 4. Retention: D1 / D7 / D30 by install cohort.
 5. AI: cost per subscriber, cost per feature, p95 latency, errors by model.
 6. Health: error rate by source and app version.
