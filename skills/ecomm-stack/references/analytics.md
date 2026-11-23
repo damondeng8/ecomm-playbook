@@ -1,7 +1,6 @@
-# 08 · Analytics & errors: all in Tinybird
+# Analytics & errors: all in Tinybird
 
 > **Default:** **[Tinybird](https://www.tinybird.co)** for events, orders, email, experiments, and errors. Workers Observability for raw server logs. No separate error tracker or analytics tool.
-> **Agent: read this when** adding a screen or an email (each gets its events) or debugging production.
 
 ## Pipeline
 
@@ -54,8 +53,8 @@ error                   {source: api|web, message, stack, route}
 
 1. Funnel: visit → product view → add to cart → checkout → order, by screen, by ad source, and by device.
 2. Revenue: orders, average order value, margin, refunds, new versus returning customers.
-3. Experiments: exposed visitors, add to cart, checkout starts, orders, and margin per exposed visitor by `experiment_id` and `variant` ([14](14-experiments.md)), from the [`experiment_readout`](../templates/experiments/experiment_readout.pipe) endpoint.
-4. Email: sends, clicks, orders, revenue per recipient, unsubscribes, by flow and variant ([10](10-email.md)).
+3. Experiments: exposed visitors, add to cart, checkout starts, orders, and margin per exposed visitor by `experiment_id` and `variant` (`ecomm-experiments`), from the [`experiment_readout`](../../ecomm-experiments/experiment_readout.pipe) endpoint.
+4. Email: sends, clicks, orders, revenue per recipient, unsubscribes, by flow and variant (`ecomm-email`).
 5. Repeat: second-order rate at 30, 60, 90 days by first-order cohort.
 6. Health: error rate, checkout failure rate, page speed.
 

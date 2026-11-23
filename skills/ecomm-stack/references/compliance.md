@@ -1,7 +1,7 @@
-# 13 · Security, privacy, and selling rules
+# Security, privacy, and selling rules
 
 > **Default:** secrets out of the browser, the server decides every price, card data never touches your Worker, marketing email only with consent, every claim provable.
-> **Agent: read this when** touching checkout, customer data, email, or claims on a page, or preparing a launch. This is a checklist, not legal advice. **[HUMAN]** confirms the rules for each country sold to.
+> This is a checklist, not legal advice. The user confirms the rules for each country sold to.
 
 ## Security
 
@@ -21,7 +21,7 @@
 - Collect the minimum. Order records, an email, an address.
 - Privacy Policy and Terms on your domain, served from Workers.
 - GDPR/CCPA: export and deletion on request, no data selling, consent before non-essential cookies and ad pixels for EU and UK visitors.
-- First-party analytics go to your own `/events` ([08](08-analytics-observability.md)). Ad pixels load only after consent where consent is required.
+- First-party analytics go to your own `/events` (`ecomm-stack` (`references/analytics.md`)). Ad pixels load only after consent where consent is required.
 
 ## Email and SMS
 
@@ -29,7 +29,7 @@
 |---|---|
 | **Consent** | Marketing only to people who opted in, or recent customers where the law allows it. Record when and how. Canada (CASL) and the EU are stricter than the US |
 | **Identify yourself** | Real From name, physical mailing address in every marketing email |
-| **Unsubscribe** | One click, no login, honored at once. `List-Unsubscribe` headers ([10](10-email.md)) |
+| **Unsubscribe** | One click, no login, honored at once. `List-Unsubscribe` headers (`ecomm-email`) |
 | **Honest subject lines** | The subject matches the content |
 | **Transactional stays transactional** | No promotion in order and shipping emails beyond a light footer |
 
@@ -43,7 +43,7 @@
 | **Prices** | The "was" price is one you really charged. Deadlines and stock counts are real |
 | **Subscriptions** | Terms next to the button, a reminder before renewal, cancel online in as few steps as signing up |
 | **Policies** | Shipping times, returns, and refunds stated before payment and honored |
-| **Product safety** | Category rules, labels, and testing ([00](00-product-and-offer.md) domain guide) |
+| **Product safety** | Category rules, labels, and testing for the product's category |
 | **Tax and duty** | Stripe Tax for collection. Say who pays import duty |
 
 ## Launch checklist

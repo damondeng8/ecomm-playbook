@@ -1,7 +1,11 @@
-# 07 · Checkout, offers, and pricing
+---
+name: ecomm-checkout
+description: "Build cart, checkout, orders and offers for a store on Stripe: guest checkout with wallets first, an orders table written only by verified webhooks, server-side prices, bundles, order bump, post-purchase upsell, free-shipping threshold, subscribe and save, guarantees, and the LiftLike rules for changing prices (approved ladder and floor, anchor pricing, reprice checklist). Use when building or changing cart, checkout, discounts, order handling, any price display, or when planning a price or offer change."
+---
 
-> **Default:** **Stripe** Checkout with wallets first, guest checkout, an `orders` table written only by verified webhooks. Sell an offer, not a product: bundle, bonus, guarantee.
-> **Agent: read this when** building cart, checkout, discounts, order handling, or any price display.
+# Checkout, offers, and pricing
+
+Stripe Checkout with wallets first, guest checkout, an `orders` table written only by verified webhooks. Sell an offer, not a product: bundle, bonus, guarantee.
 
 ## The math (measure your own)
 
@@ -10,7 +14,7 @@ visitors × conversion rate × average order value = revenue
 revenue − product cost − shipping − payment fees − ad spend = contribution margin
 ```
 
-There are three levers: more of the right visitors ([11](11-distribution.md)), a higher conversion rate ([06](06-screens.md), [14](14-experiments.md)), a higher order value (this chapter). Then repeat orders ([10](10-email.md)). Numbers: [12](12-costs.md).
+The levers: a higher conversion rate (`ecomm-screens`, `ecomm-experiments`), a higher order value (this skill), repeat orders (`ecomm-email`).
 
 ## Infra
 
@@ -20,7 +24,7 @@ There are three levers: more of the right visitors ([11](11-distribution.md)), a
 | Tax | **[Stripe Tax](https://docs.stripe.com/tax)** |
 | Subscriptions and refills | **[Stripe Billing](https://docs.stripe.com/billing)** + Customer Portal |
 | Discounts | Stripe coupons and promotion codes |
-| Fulfilment | Your 3PL or label provider's API, called from a Queue. **[HUMAN]** picks it |
+| Fulfilment | Your 3PL or label provider's API, called from a Queue. The user picks it |
 
 Check [stripe.com/pricing](https://stripe.com/pricing) for current fees before putting a number in a plan.
 
@@ -33,19 +37,19 @@ Check [stripe.com/pricing](https://stripe.com/pricing) for current fees before p
 5. **Subscribe and save** for anything that runs out. Cancelling takes two taps.
 6. **A guarantee that reverses the risk.** Say it plainly and honor it without argument.
 7. **Bonuses beat discounts.** A discount lowers the price people expect. A bonus doesn't.
-8. **One abandon offer,** shown once, by email ([10](10-email.md)).
+8. **One abandon offer,** shown once, by email (`ecomm-email`).
 9. **Show the total early,** shipping and tax included, as soon as you know them.
 
 ## Changing prices (from LiftLike)
 
-A price change is always the founder's decision ([14](14-experiments.md), Tier B).
+A price change is always the founder's decision (`ecomm-experiments`, Tier B).
 
 1. **Approve a ladder once.** A few price points per product or bundle and a floor, written in `docs/EXPERIMENTS.md`. Rungs at or above the floor can be tested without a new approval. The floor is never below landed cost plus payment fees plus the cost to acquire the order.
 2. **Discount with an anchor.** Set the list price so the discounted price lands on the exact number you want. Half of $359.98 is $179.99; half of $359.99 bills $180.00. Only use an anchor price you really charge.
 3. **Judge a price on profit, not on orders.** Primary metric: contribution margin per visitor. Guardrail: cash per exposed visitor at least 80% of control, and refund rate not above control.
 4. **Start a price test on at most 20% of traffic.** 50/50 only on a clear win. 100% needs a new approval.
 5. **A visitor keeps the price they first saw,** on every screen and in every email, until the test ends.
-6. **Only test a price where the traffic can finish it.** Do the traffic math first ([14](14-experiments.md)).
+6. **Only test a price where the traffic can finish it.** Do the traffic math first (`ecomm-experiments`).
 7. **Work out who pays for a cheaper price.** If a creator or affiliate earns a percentage, tell them before the test starts.
 8. **One offer is a legitimate page.** If you cut to a single option, pin the button to the bottom of the screen.
 
@@ -61,7 +65,7 @@ A price change is always the founder's decision ([14](14-experiments.md), Tier B
 
 ## Orders
 
-The `orders` table ([03](03-database.md)) is written **only** by `POST /webhooks/stripe`, verified with `stripe.webhooks.constructEventAsync`. Writes are idempotent, keyed by event id.
+The `orders` table (`ecomm-stack` (`references/database.md`)) is written **only** by `POST /webhooks/stripe`, verified with `stripe.webhooks.constructEventAsync`. Writes are idempotent, keyed by event id.
 
 - The browser never decides that an order is paid. The thank-you page reads the order from the server.
 - Prices, stock, discounts, and shipping are computed on the server. The cart the browser sends is a request, not a fact.
@@ -82,4 +86,4 @@ The `orders` table ([03](03-database.md)) is written **only** by `POST /webhooks
 ## Resources
 
 - [Stripe Checkout](https://docs.stripe.com/payments/checkout) · [Stripe webhooks](https://docs.stripe.com/webhooks) · [Stripe Tax](https://docs.stripe.com/tax)
-- [Baymard: checkout usability](https://baymard.com/research/checkout-usability) · *$100M Offers* ([15](15-copy.md))
+- [Baymard: checkout usability](https://baymard.com/research/checkout-usability) · *$100M Offers* (`ecomm-copy`)

@@ -1,16 +1,18 @@
-# 15 · Copy: Breakthrough Advertising, Propaganda, and the sales books
+---
+name: ecomm-copy
+description: "Write and review sales copy for an online store using Breakthrough Advertising (awareness levels, market sophistication, mechanisms), Bernays' Propaganda, and the classic sales books (Hopkins, Ogilvy, Cialdini, Hormozi, Sugarman, Halbert, Collier, StoryBrand). Use when writing or critiquing a headline, landing page, product page, ad hook, email, subject line, offer wording, or an A/B test arm, and when building a copy brief."
+---
 
-> **Default:** find the desire that already exists, meet the customer at their level of awareness, make one specific claim you can prove. Then test it.
-> **Agent: read this when** writing a headline, a product page, an ad, an email, or a test arm. Fill in `docs/copy-brief.md` first.
+# Copy: Breakthrough Advertising, Propaganda, and the sales books
 
-These are working summaries, not quotes. Read the books for the detail.
+Find the desire that already exists, meet the customer at their level of awareness, make one specific claim you can prove, then test it. Before writing anything, fill in or read `docs/copy-brief.md` (template below).
 
 ## Rules above every technique
 
 1. **Every claim is true and provable.** Real reviews, real numbers, real deadlines, real stock counts.
 2. **No fake urgency or scarcity.** A deadline that resets is a lie.
 3. **Persuade people toward something that helps them.** Bernays shows how persuasion works on groups. Use it to make a good product understood, never to mislead.
-4. **Health, income, and results claims** need evidence and a disclaimer ([13](13-security-privacy-compliance.md)).
+4. **Health, income, and results claims** need evidence and a disclaimer (`ecomm-stack` (`references/compliance.md`)).
 
 ## Breakthrough Advertising (Eugene Schwartz)
 
@@ -58,7 +60,7 @@ Cold ad traffic is mostly problem aware or unaware. Email subscribers and return
 4. **Make news.** An event, a study, a challenge gives people a reason to talk.
 5. **Appeal to the real motive.** People buy for status, belonging, safety, and love, then give a practical reason.
 
-Use: creator and expert partnerships ([11](11-distribution.md)), "as used by" proof, content about the routine or room or identity around the product.
+Use: creator and expert partnerships, "as used by" proof, content about the routine or room or identity around the product.
 
 ## The other books
 
@@ -85,7 +87,7 @@ Fill this in before writing anything. Every answer cites a source: a review, a s
 4. **Sophistication stage** of the market.
 5. **Mechanism:** how the product delivers, in one sentence.
 6. **Proof:** numbers, reviews, authorities, demonstration.
-7. **Offer:** price, bundle, bonus, guarantee, shipping ([07](07-payments-pricing.md)).
+7. **Offer:** price, bundle, bonus, guarantee, shipping (`ecomm-checkout`).
 8. **Objections,** each with its answer.
 9. **Voice:** who is speaking (founder, creator, brand) and to whom.
 
@@ -107,7 +109,14 @@ Fill this in before writing anything. Every answer cites a source: a review, a s
 - Benefit first, then the feature that causes it.
 - Plain words, short sentences. Read it aloud.
 - No em dashes, no "unlock", "elevate", "seamless", "game-changer", no three-adjective lists. It reads as a machine and people stop.
-- Write three angles for anything that matters (for example: the problem, the proof, the identity) and test them ([14](14-experiments.md)).
+- Write three angles for anything that matters (for example: the problem, the proof, the identity) and test them (`ecomm-experiments`).
+
+## Ads and hooks
+
+- Write each hook for one awareness level. Cold traffic gets the problem or a story, never the product name first.
+- 3–5 formats: problem then fix, before/after, unboxing, "things I wish I knew", a customer's reaction.
+- One landing page per ad angle. The headline on the page repeats the promise in the ad.
+- Paid or gifted creators disclose it on every post.
 
 ## Where each idea goes
 

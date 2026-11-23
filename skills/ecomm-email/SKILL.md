@@ -1,9 +1,11 @@
-# 10 · Email: HTML emails the LiftLike way
+---
+name: ecomm-email
+description: "Build HTML marketing and transactional emails for a store the way LiftLike does: one 640px table-based shell (shell.ts), first-person voice, three angle variants per send, merge fields with fallbacks, padded preheader, signed one-click unsubscribe, lists computed from the database, exactly-once automations that start in rehearsal. Use when writing, rendering, previewing, testing or sending an email, building a flow (welcome, cart abandon, post-purchase, win-back), or splitting a list for a test."
+---
 
-> **Default:** one HTML shell, copy in a real person's voice, three angles per send, lists computed from the database, every automation sends exactly once. The agent drafts. A human approves the copy before anything goes live.
-> **Agent: read this when** writing an email, building a flow, importing a list, or sending anything.
+# Email: HTML emails the LiftLike way
 
-Email is where a store makes its repeat revenue. It is owned, it costs almost nothing to send, and it reaches the people most aware of you ([15](15-copy.md)).
+One HTML shell, copy in a real person's voice, three angles per send, lists computed from the database, every automation sends exactly once. You draft; the user approves the copy and makes every live send. Tools in this folder: `shell.ts` (render, merge fields, list split), `shell.test.ts`, `preview.ts`.
 
 ## Pipeline
 
@@ -15,11 +17,11 @@ D1 (customers, carts, orders) ──cron──▶ lists ──▶ automation or 
 
 - Sending: **[Cloudflare Email Service](https://developers.cloudflare.com/email-service/)** from the Worker, through a Queue.
 - Marketing and transactional mail go out from different subdomains (`news.` and `orders.`), so a marketing complaint never hurts order emails.
-- **[HUMAN]** Set SPF, DKIM, and DMARC on both before the first send.
+- SPF, DKIM, and DMARC must be set on both before the first send. Ask the user to confirm; you can't verify inbox placement yourself.
 
 ## The shell
 
-Start from [`templates/email/shell.ts`](../templates/email/shell.ts). One function, blocks in, HTML and plain text out.
+Copy `shell.ts`, `shell.test.ts` and `preview.ts` from this folder into the project's `emails/`. One function, blocks in, HTML and plain text out. Render a draft with `bun emails/preview.ts <module> [fields.json]` and look at the files before showing the user.
 
 - **640 px** wide, one column, tables for layout, every style inline. No web fonts, no CSS in `<head>` that the layout depends on.
 - System font stack. Body 16–17 px, line height 1.5.
@@ -35,10 +37,10 @@ Start from [`templates/email/shell.ts`](../templates/email/shell.ts). One functi
 
 1. **A person writes it.** First person, from the founder or a creator, "From: Maya at <brand>". Reply-To is an inbox someone reads.
 2. **StoryBrand roles, fixed:** the customer is the hero, the sender is the guide, the product is the plan.
-3. **Three angles per send (A / B / C).** For example: the problem, the proof, the identity. Split the list and compare ([14](14-experiments.md)).
+3. **Three angles per send (A / B / C).** For example: the problem, the proof, the identity. Split the list and compare (`ecomm-experiments`).
 4. **One idea, one call to action.**
 5. **Subject and preheader are written together.** The preheader finishes the thought the subject starts.
-6. **Plain writing** ([15](15-copy.md)): no em dashes, no machine vocabulary, short sentences.
+6. **Plain writing** (`ecomm-copy`): no em dashes, no machine vocabulary, short sentences.
 7. **State the offer exactly:** price, what the discount applies to, when it ends. The same words on the page it links to.
 
 ## Merge fields
@@ -87,13 +89,13 @@ The long abandon tail (day 7 to day 60) is cheap and still converts. Stop a flow
 2. **Smoke first:** send to yourself, read it on a phone, click every link. Then the list.
 3. **Suppression is enforced at send time.** Unsubscribed and bounced addresses are skipped whatever the list says.
 4. **One-click unsubscribe:** a signed link in the footer and the `List-Unsubscribe` and `List-Unsubscribe-Post` headers. It works without logging in.
-5. **Consent:** marketing email goes only to people who opted in or bought from you, and only as long as the law allows that ([13](13-security-privacy-compliance.md)).
+5. **Consent:** marketing email goes only to people who opted in or bought from you, and only as long as the law allows that (`ecomm-stack` (`references/compliance.md`)).
 6. **Throttle** large sends through the Queue. Watch bounces and complaints as they come in.
 7. **Never send twice.** One writer per list and per ledger at a time.
 
 ## Measuring
 
-Events to Tinybird ([08](08-analytics-observability.md)): `email_sent`, `email_delivered`, `email_bounced`, `email_clicked`, `email_unsubscribed`, `email_complained`, each with `email_id`, `flow`, `experiment_id`, `variant`.
+Events to Tinybird (`ecomm-stack` (`references/analytics.md`)): `email_sent`, `email_delivered`, `email_bounced`, `email_clicked`, `email_unsubscribed`, `email_complained`, each with `email_id`, `flow`, `experiment_id`, `variant`.
 
 - Judge on **clicks and orders**, not opens. Mail privacy features open every email automatically.
 - Revenue per recipient within 5 days of a click is the number that matters.

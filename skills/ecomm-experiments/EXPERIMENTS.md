@@ -1,6 +1,6 @@
 # Experiments: governance ledger
 
-> Copy to `docs/EXPERIMENTS.md`. This is the approval ledger for experiments and price changes (playbook chapter 14).
+> Copy to `docs/EXPERIMENTS.md`. This is the approval ledger for experiments and price changes (the `ecomm-experiments` skill).
 
 - **Tier A** (headlines, body copy, button labels, order of approved sections, email subject lines and angle variants of an approved email, rollout weights): the agent runs these on its own.
 - **Tier B** (new, removed, or redesigned screens or sections; prices, discounts, bundles, shipping, guarantee terms; a new email, a new list, send frequency; Stripe): needs a founder `APPROVED` line in this file before any traffic is routed.

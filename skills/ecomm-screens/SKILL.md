@@ -1,7 +1,11 @@
-# 06 · Screens: building the store
+---
+name: ecomm-screens
+description: "Build and change the screens of an online store: landing page, product page, cart drawer, checkout, thank-you page, order status. Covers section order for a product page, cart and checkout rules, phone-first and in-app-browser checks, page speed, and building each screen as a data-fed section list so copy and layout variations can be A/B tested. Use when building, restyling or reviewing any page a shopper sees."
+---
 
-> **Default:** React + Vite on Workers static assets, phone width first. Six screens, each built from one reference, each with one job and one metric.
-> **Agent: read this when** building or changing any page a shopper sees.
+# Screens: building the store
+
+React + Vite on Workers static assets, phone width first. Six screens, each built from one reference, each with one job and one metric. Design rules and how to pick references are in `design.md`.
 
 ## The screens
 
@@ -18,11 +22,11 @@ Also: collection page (only past about 8 products), policies, a quiz if the prod
 
 ## Build order
 
-1. **Design tokens** ([09](09-design-ux.md)): color, type, spacing, radius as CSS variables.
+1. **Design tokens** (`ecomm-screens` (`design.md`)): color, type, spacing, radius as CSS variables.
 2. **Product page**, with fake data. It is the store. Get it right on a phone.
 3. **Cart and checkout** in Stripe test mode, end to end, to a thank-you page.
 4. **Landing page** for the first ad angle.
-5. Order emails ([10](10-email.md)), then the rest.
+5. Order emails (`ecomm-email`), then the rest.
 
 One real purchase on a real phone on day 1 or 2, before polish.
 
@@ -30,8 +34,8 @@ One real purchase on a real phone on day 1 or 2, before polish.
 
 1. **Gallery:** first image shows the result or the product in use. Video second. Swipeable, fast.
 2. **Name, star rating with count, price.** The price shown is the price charged.
-3. **The promise** in one line, in the customer's words ([15](15-copy.md)).
-4. **Variant and quantity pickers.** Bundles here, best value marked ([07](07-payments-pricing.md)).
+3. **The promise** in one line, in the customer's words (`ecomm-copy`).
+4. **Variant and quantity pickers.** Bundles here, best value marked (`ecomm-checkout`).
 5. **Add to cart.** Stays pinned to the bottom of the screen once the main button scrolls away.
 6. **Reassurance row:** shipping time, returns, guarantee.
 7. **How it works:** the mechanism, three steps or one diagram.
@@ -45,8 +49,8 @@ One real purchase on a real phone on day 1 or 2, before polish.
 - Show the total with shipping as early as you know it. Surprise costs at checkout are the top reason carts are abandoned.
 - A progress bar to free shipping, if you offer it.
 - One order bump in the cart: a small add-on, one tap.
-- **Guest checkout.** No account required ([04](04-auth.md)). Email first, so an abandoned checkout can be followed up.
-- Wallets first: Apple Pay, Google Pay, Link ([07](07-payments-pricing.md)).
+- **Guest checkout.** No account required (`ecomm-stack` (`references/customers.md`)). Email first, so an abandoned checkout can be followed up.
+- Wallets first: Apple Pay, Google Pay, Link (`ecomm-checkout`).
 - No navigation, no new selling at checkout. Reassurance only.
 
 ## Rules for every screen
@@ -57,8 +61,8 @@ One real purchase on a real phone on day 1 or 2, before polish.
 4. **Every state:** loading, empty cart, out of stock, payment failed, slow network.
 5. **Test in the in-app browser** of Instagram and TikTok on a real phone. Wallets, cookies, and redirects behave differently there.
 6. **Accessible:** contrast, 44 px targets, labels on inputs, alt text.
-7. **Every screen sends its events** ([08](08-analytics-observability.md)) and can carry an experiment ([14](14-experiments.md)).
-8. **Copy comes from the brief** ([15](15-copy.md)), not from placeholder text.
+7. **Every screen sends its events** (`ecomm-stack` (`references/analytics.md`)) and can carry an experiment (`ecomm-experiments`).
+8. **Copy comes from the brief** (`ecomm-copy`), not from placeholder text.
 
 ## Built to be tested
 
@@ -81,7 +85,7 @@ export const productPage = {
 - [Static assets on Workers](https://developers.cloudflare.com/workers/static-assets/) with the [Cloudflare Vite plugin](https://developers.cloudflare.com/workers/vite-plugin/). API and site ship in one deploy.
 - Plain CSS with tokens as CSS variables, `fetch`, one small router. No UI kit or state library until you can name the problem.
 - Catalog in D1, read through KV cache. Prices and stock always come from the server.
-- No Next.js, no Vercel ([01](01-building-with-agents.md)).
+- No Next.js, no Vercel (`ecomm-stack`).
 
 ## Done means
 

@@ -1,5 +1,5 @@
 DESCRIPTION >
-    Per-arm readout for one experiment: the numbers the optimizer routines decide on (playbook chapter 14).
+    Per-arm readout for one experiment: the numbers the optimizer routines decide on (ecomm-experiments skill).
     A visitor counts in the arm of their first experiment_exposed event, and only for outcomes after it.
     Returns one row per arm with exposed, converted, checkout and ordering visitors, cash, margin, and for each
     test arm the relative lift and two-sided p-value against the control arm (two-proportion z-test).

@@ -1,7 +1,6 @@
-# 03 · Database: D1 → PlanetScale
+# Database: D1 → PlanetScale
 
 > **Default:** D1, plain SQL, Wrangler migrations. **Scale path:** PlanetScale Postgres via Hyperdrive. No ORM.
-> **Agent: read this when** adding tables, writing migrations, or deciding whether to migrate.
 
 ## Where data goes
 
@@ -79,7 +78,7 @@ Otherwise stay on D1.
 
 ## How to move
 
-1. **[HUMAN]** Create a [PlanetScale Postgres](https://planetscale.com/docs/postgres) database.
+1. The user creates a [PlanetScale Postgres](https://planetscale.com/docs/postgres) database.
 2. Put **[Hyperdrive](https://developers.cloudflare.com/hyperdrive/)** in front of it.
 3. Query with [`postgres`](https://github.com/porsager/postgres) over `env.HYPERDRIVE.connectionString`, plain SQL.
 4. Port migrations to Postgres; use PlanetScale branches for staging.

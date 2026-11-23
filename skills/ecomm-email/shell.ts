@@ -1,5 +1,5 @@
 // emails/shell.ts: the one HTML email shell. Blocks in, { subject, html, text } out.
-// 640 px, one column, tables for layout, every style inline. Rules: playbook/10-email.md.
+// 640 px, one column, tables for layout, every style inline. Rules: the ecomm-email skill.
 
 export type Brand = {
   name: string; // "Acme"

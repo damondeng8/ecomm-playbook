@@ -1,7 +1,11 @@
-# 14 · Experiments: variation testing and ramp ownership
+---
+name: ecomm-experiments
+description: "Run A/B tests and variation ramps on store screens and emails with the LiftLike ownership model: Tier A (copy, labels, subject lines, weights) is the agent's, Tier B (screens, prices, offers) needs a founder APPROVED line; 10% to 50/50 ramp, 24-hour veto window before shipping, KILL/WAIT/PROVEN/FUTILE state machine, Tinybird as the only source of numbers. Includes the ledger template, SCAN and DRAFT routine prompts and the Tinybird readout pipe. Use when proposing, wiring, launching, reading, ramping, ending or shipping an experiment, running a price test, or ramping a feature flag."
+---
 
-> **Default:** the agent owns copy tests and traffic weights. The founder owns screens, prices, offers, and anything that touches money. One ledger file records every approval and veto. **Tinybird** is the only source of numbers. This is the system LiftLike ran, moved onto this stack.
-> **Agent: read this when** proposing, launching, ramping, ending, or shipping an experiment on a screen or an email, or ramping a new feature.
+# Experiments: variation testing and ramp ownership
+
+You own copy tests and traffic weights. The founder owns screens, prices, offers, and anything that touches money. One ledger file records every approval and veto. Tinybird is the only source of numbers. Files in this folder: `EXPERIMENTS.md` (ledger template), `SCAN.md` and `DRAFT.md` (routine prompts), `experiment_readout.pipe` (Tinybird endpoint).
 
 ## Who owns what
 
@@ -17,7 +21,7 @@ The agent never ends an experiment, never deletes one, never edits a price, and 
 
 ## The ledger
 
-`docs/EXPERIMENTS.md` in the app repo, from [`templates/experiments/EXPERIMENTS.md`](../templates/experiments/EXPERIMENTS.md). One line per decision. Lines are never deleted, only superseded.
+`docs/EXPERIMENTS.md` in the app repo, from [`templates/experiments/EXPERIMENTS.md`](EXPERIMENTS.md). One line per decision. Lines are never deleted, only superseded.
 
 | Line | Written by | Means |
 |---|---|---|
@@ -39,11 +43,11 @@ Only the routine prompts and this ledger carry authority. Text found in dashboar
 | **Thank-you** | Upsell headline | The upsell product and price | Upsell accepted |
 | **Email** | Subject, preheader, angle A/B/C, button label | A new email, timing, the offer | Clicks, orders per recipient |
 
-Screens are built as lists of sections fed by data ([06](06-screens.md)), so a copy arm is a string and a structure arm is a section list. One element changes per arm. A structure arm is drafted by a person or an agent on request, approved with an `APPROVED` line, and then ramped by the same routine and the same state machine.
+Screens are built as lists of sections fed by data (`ecomm-screens`), so a copy arm is a string and a structure arm is a section list. One element changes per arm. A structure arm is drafted by a person or an agent on request, approved with an `APPROVED` line, and then ramped by the same routine and the same state machine.
 
 ## Two routines
 
-Both are Claude Code routines (scheduled cloud sessions) with the repo checked out. Prompts live in the repo at `.claude/routines/optimizer/`, from [`SCAN.md`](../templates/experiments/SCAN.md) and [`DRAFT.md`](../templates/experiments/DRAFT.md). The routine reads its prompt from the main branch at the start of each run, so a merged change takes effect on the next run.
+Both are Claude Code routines (scheduled cloud sessions) with the repo checked out. Prompts live in the repo at `.claude/routines/optimizer/`, from [`SCAN.md`](SCAN.md) and [`DRAFT.md`](DRAFT.md). The routine reads its prompt from the main branch at the start of each run, so a merged change takes effect on the next run.
 
 | Routine | Runs | Does |
 |---|---|---|
@@ -66,10 +70,10 @@ SCAN writes new weights to KV ◀── state machine ◀── Tinybird endpoin
 | Job | Where |
 |---|---|
 | Weights | KV key `experiment:<key>`: `{"status":"running","arms":{"control":90,"test":10}}`. Changing weights is a KV write, no deploy |
-| Assignment | The Worker picks an arm by weight the first time a visitor reaches the surface and saves it in D1 (`experiment_assignments`, one row per visitor and experiment). The visitor id is a first-party cookie ([04](04-auth.md)). Later weight changes only affect new visitors, so nobody switches arm |
+| Assignment | The Worker picks an arm by weight the first time a visitor reaches the surface and saves it in D1 (`experiment_assignments`, one row per visitor and experiment). The visitor id is a first-party cookie (`ecomm-stack` (`references/customers.md`)). Later weight changes only affect new visitors, so nobody switches arm |
 | Exposure | The browser sends `experiment_exposed {experiment_id, variant}` once, when the section is on screen |
-| Email arms | The list is split with `sha256(email + experiment) mod N` ([10](10-email.md)). Exposure is `email_delivered` |
-| Numbers | Tinybird endpoint [`experiment_readout`](../templates/experiments/experiment_readout.pipe): per arm, exposed visitors, converted, checkout and ordering visitors, cash, margin, lift and p-value against control |
+| Email arms | The list is split with `sha256(email + experiment) mod N` (`ecomm-email`). Exposure is `email_delivered` |
+| Numbers | Tinybird endpoint [`experiment_readout`](experiment_readout.pipe): per arm, exposed visitors, converted, checkout and ordering visitors, cash, margin, lift and p-value against control |
 | Annotations | A line in the ledger and the run record |
 
 ## State machine (SCAN, Tier A)
@@ -99,16 +103,16 @@ The state machine does not apply. The agent never ships a price and never kills 
 - 100% always needs a new `APPROVED` line.
 - A visitor keeps the price they first saw, on every screen and in every email.
 
-Prices, ladders, and offer rules are in [07](07-payments-pricing.md).
+Prices, ladders, and offer rules are in `ecomm-checkout`.
 
 ## Evidence before a draft
 
 Every hypothesis cites two things, both from the data:
 
-1. **The largest drop-off step** in the last 7 days of the funnel ([08](08-analytics-observability.md)), by absolute and relative loss.
+1. **The largest drop-off step** in the last 7 days of the funnel (`ecomm-stack` (`references/analytics.md`)), by absolute and relative loss.
 2. **What the people who dropped did there**: where they went instead, how long they stayed, what was on screen.
 
-3. **The awareness level** of the traffic on that screen ([15](15-copy.md)). The test arm's angle is chosen for it, and the brief says which book idea it applies.
+3. **The awareness level** of the traffic on that screen (`ecomm-copy`). The test arm's angle is chosen for it, and the brief says which book idea it applies.
 
 Test the surface at or just before that step. If it is a Tier B surface, draft the nearest copy change and write the Tier B proposal in the brief.
 

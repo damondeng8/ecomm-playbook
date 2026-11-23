@@ -57,6 +57,6 @@ export default {
     }
   },
 
-  // Lists sync, automations, and scheduled sends run here (playbook/10-email.md).
+  // Lists sync, automations, and scheduled sends run here (the ecomm-email skill).
   async scheduled(controller, env, ctx) {},
 } satisfies ExportedHandler<Env>;

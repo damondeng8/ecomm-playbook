@@ -26,7 +26,7 @@ Read `<the most recent experiment's files>` on the main branch and copy their st
 ## Step 3: Choose what to draft
 Only if capacity is open. Prefer `top` slots: they fill in days, `checkout` slots take weeks. Prefer the surface at or just before the largest drop-off, when that surface is Tier A. If the largest drop-off is on a Tier B surface, draft the nearest Tier A copy change and write the Tier B proposal in the brief. Do not draft a surface that has a running or pending experiment.
 
-Read `docs/copy-brief.md` and playbook chapter 15. Name the awareness level of the traffic on the surface and the idea you are applying (for example: lead with the mechanism, name the problem exactly, third-party proof).
+Read `docs/copy-brief.md` and the `ecomm-copy` skill. Name the awareness level of the traffic on the surface and the idea you are applying (for example: lead with the mechanism, name the problem exactly, third-party proof).
 
 Write ONE test arm. Copy rules: one element changed, every claim true and already sourced in `docs/copy-brief.md`, no new health claims, no new guarantees, no prices or discounts, at most 20% longer than control, plain words, no emoji. Write a two-sentence hypothesis: the first names the drop-off step and what people did there, with numbers; the second names the metric you expect to move and why.
 

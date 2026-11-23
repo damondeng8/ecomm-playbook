@@ -1,16 +1,15 @@
-# 02 · Backend: all-in on Cloudflare
+# Backend: all-in on Cloudflare
 
 > **Default:** one Cloudflare account for API, data, files, jobs, email, AI routing, and web. Workers `fetch` handler, no framework.
-> **Agent: read this when** creating or changing anything server-side.
 
-One account, one CLI ([Wrangler](https://developers.cloudflare.com/workers/wrangler/)), one bill. $5/month covers a real app; R2 has no egress fees ([12 · Costs](12-costs.md)).
+One account, one CLI ([Wrangler](https://developers.cloudflare.com/workers/wrangler/)), one bill. R2 has no egress fees.
 
 ## Building blocks
 
 | Need | Use |
 |---|---|
 | HTTP API | **[Workers](https://developers.cloudflare.com/workers/)**, one `fetch` handler ([`templates/worker.ts`](../templates/worker.ts)) |
-| Relational data | **[D1](https://developers.cloudflare.com/d1/)**, later PlanetScale ([03](03-database.md)) |
+| Relational data | **[D1](https://developers.cloudflare.com/d1/)**, later PlanetScale (`ecomm-stack` (`references/database.md`)) |
 | Per-user / per-chat state, realtime | **[Durable Objects](https://developers.cloudflare.com/durable-objects/)** (SQLite) |
 | Multi-step AI pipelines | **[Workflows](https://developers.cloudflare.com/workflows/)** |
 | Background jobs | **[Queues](https://developers.cloudflare.com/queues/)** |
@@ -18,8 +17,8 @@ One account, one CLI ([Wrangler](https://developers.cloudflare.com/workers/wrang
 | Files, photos, audio | **[R2](https://developers.cloudflare.com/r2/)** |
 | Flags, config, cache | **[KV](https://developers.cloudflare.com/kv/)** |
 | Embeddings / memory | **[Vectorize](https://developers.cloudflare.com/vectorize/)** |
-| AI routing, caching, logs | **[AI Gateway](https://developers.cloudflare.com/ai-gateway/)** → OpenRouter ([05](05-ai.md)) |
-| Auth | **Better Auth** in the Worker ([04](04-auth.md)) |
+| AI routing, caching, logs | **[AI Gateway](https://developers.cloudflare.com/ai-gateway/)** → OpenRouter |
+| Auth | **Better Auth** in the Worker (`ecomm-stack` (`references/customers.md`)) |
 | Email | **[Email Service](https://developers.cloudflare.com/email-service/)** |
 | Bot protection | **[Turnstile](https://developers.cloudflare.com/turnstile/)** |
 | Rate limits | **[Rate Limiting binding](https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/)** |
@@ -61,7 +60,7 @@ Use [`URLPattern`](https://developer.mozilla.org/docs/Web/API/URLPattern) for pa
 8. All server logic runs on Cloudflare. No side servers.
 9. Heavy CPU work goes in Workflows or Queues, not a request.
 10. KV is eventually consistent. Use Durable Objects or D1 for counters, credits, quotas.
-11. D1 writes go to one region per database. Outgrowing that is the signal to move ([03](03-database.md)).
+11. D1 writes go to one region per database. Outgrowing that is the signal to move (`ecomm-stack` (`references/database.md`)).
 
 ## Resources
 

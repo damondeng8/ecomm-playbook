@@ -1,6 +1,6 @@
 // apps/api/src/auth.ts: Better Auth inside the Worker, storing users in D1 (no ORM).
 // Guest checkout needs none of this. It is for order lookup, accounts, and the admin sign-in.
-// Tables: see playbook/04-auth.md step 3 (migrations/0001_auth.sql).
+// Tables: see ecomm-stack references/customers.md (migrations/0001_auth.sql).
 import { betterAuth } from "better-auth";
 import { magicLink } from "better-auth/plugins";
 import { env } from "cloudflare:workers";

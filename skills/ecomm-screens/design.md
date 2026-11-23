@@ -1,7 +1,6 @@
-# 09 · Design & UX
+# Design & UX
 
 > **Priority #1.** UX comes before every other decision here.
-> **Agent: read this when** building any screen, flow, or email. First pick reference stores for this product type from the table below, write them into `docs/brief.md`, and study their flows.
 
 ## Reference stores
 
@@ -32,7 +31,7 @@ Copy patterns, not assets: no logos, photos, illustrations, written copy, or bra
 
 1. Fast: optimistic UI, skeletons, streaming text, tap response under 100 ms.
 2. One primary action per screen.
-3. No account before buying ([04](04-auth.md)).
+3. No account before buying (`ecomm-stack` (`references/customers.md`)).
 4. Motion only where it explains something: the cart opening, an item added.
 5. Show the product in use, on real people, in real light.
 6. Web conventions: the cart is top right, the logo goes home, links look like links.
@@ -48,13 +47,13 @@ Copy patterns, not assets: no logos, photos, illustrations, written copy, or bra
 5. Checkout: email, wallet, done.
 6. Thank-you: one upsell, then what happens next.
 
-Track each step ([08](08-analytics-observability.md)). Build each screen from [06](06-screens.md).
+Track each step (`ecomm-stack` (`references/analytics.md`)). Build each screen from `ecomm-screens`.
 
 ## Design system
 
 - Tokens: color (light and dark), type scale, 4/8 pt spacing, radius, shadows, motion durations.
 - Kit: Button, ProductCard, Gallery, VariantPicker, BundlePicker, CartDrawer, ReviewCard, FAQ, Input, Toast.
-- The same tokens in the store's CSS variables and in the email shell ([10](10-email.md)).
+- The same tokens in the store's CSS variables and in the email shell (`ecomm-email`).
 - The first product image and the headline do most of the selling.
 
 ## Resources
